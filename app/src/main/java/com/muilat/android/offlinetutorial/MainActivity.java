@@ -22,6 +22,7 @@ import android.view.MenuItem;
 
 import com.muilat.android.offlinetutorial.data.SubCategories;
 import com.muilat.android.offlinetutorial.data.SubCategoryAdapter;
+import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity
 
         //retrieve and cache the system's default"short animation time
         mLongAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+
+        ///initialize SynAdapter
+        OfflineTutorialSyncAdapter.initializeSyncAdapter(this);
     }
 
 

@@ -2,15 +2,11 @@ package com.muilat.android.offlinetutorial.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.CategoryEntry.CREATE_CATEGORIES_TABLE;
@@ -90,7 +86,7 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
             // Put the insect  into the ContentValues
             contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, categegory.getTitle());
             contentValues.put(OfflineTutorialContract.CategoryEntry._ID, categegory.getId());
-            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRPTION, categegory.getDescription());
+            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, categegory.getDescription());
             contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, "12234");
 
             long id =db.insert(OfflineTutorialContract.CategoryEntry.TABLE_NAME,null,contentValues);

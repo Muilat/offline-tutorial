@@ -37,14 +37,14 @@ public class OfflineTutorialContract  {
         public static final String TABLE_NAME = "categories";
 
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_DESCRPTION = "description";
+        public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
         public static final String COLUMN_STATUS = "status";
 
         final static String CREATE_CATEGORIES_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
                 COLUMN_TITLE + " TEXT NOT NULL,"+
-                COLUMN_DESCRPTION + " TEXT NOT NULL, "+
+                COLUMN_DESCRIPTION + " TEXT NOT NULL, "+
                 COLUMN_STATUS + " INTEGER NULL, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }

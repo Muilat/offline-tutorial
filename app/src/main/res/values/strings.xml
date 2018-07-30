@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Offline Tutorial</string>
+    <string name="sync_account_type">offlinetutorial.android.muilat.com</string>
+    <string name="content_authority">com.muilat.android.offlinetutorial</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
