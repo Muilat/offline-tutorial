@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name" translatable="false">Offline Tutorial</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="favourites" translatable="false">Favourites</string>
+    <string name="communicate" translatable="false">Communicate</string>
+
+    <!--text size strings-->
+    <string name="pref_text_size_label_small">Small</string>
+    <string name="pref_text_size_label_medium">Medium</string>
+    <string name="pref_text_size_label_large">Large</string>
+    <string name="pref_text_size_small_value" translatable="false">small_size</string>
+    <string name="pref_text_size_medium_value" translatable="false">medium_size</string>
+    <string name="pref_text_size_large_value" translatable="false">large_size</string>
+</resources>

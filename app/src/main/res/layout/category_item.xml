@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/category_card"
+    android:onClick="onCategoryClicked"
+    android:layout_marginBottom="@dimen/cardview_default_radius"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:background="?android:attr/selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/cardview_dark_background"
+            android:padding="@dimen/activity_vertical_margin">
+            <TextView
+                android:id="@+id/category_icon"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                style="@style/Base.TextAppearance.AppCompat.Large"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/category_background_paddinng"
+                android:paddingBottom="@dimen/category_background_paddinng">
+                <TextView
+                    android:id="@+id/category_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="bottom"
+                    style="@style/Base.TextAppearance.AppCompat.Large"
+                    tools:text="Sad" />
+                <TextView
+                    android:id="@+id/category_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="top"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Sad" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <!--<FrameLayout-->
+            <!--android:layout_width="1000dp"-->
+            <!--android:layout_height="@dimen/sub_cat_width"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:gravity="center"-->
+            <!--android:visibility="gone"-->
+            <!--android:id="@+id/sub_cat_holder"-->
+            <!--&gt;-->
+        <!--</FrameLayout>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="@dimen/sub_cat_width"
+            android:clipToPadding="false"
+            android:id="@+id/sub_cat_recyclerView"
+            android:paddingTop="2dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

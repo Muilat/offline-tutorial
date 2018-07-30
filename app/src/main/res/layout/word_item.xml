@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/word_card">
+    <LinearLayout
+        android:padding="@dimen/activity_padding"
+        android:background="#fc0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/sub_category_icon"
+            android:text="Hii"
+            android:gravity="center"
+            android:background="@drawable/first_letter_circle"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/category_background_paddinng"
+            android:paddingBottom="@dimen/category_background_paddinng">
+            <TextView
+                android:id="@+id/word_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                tools:text="Sad"
+                style="@style/Base.TextAppearance.AppCompat.Large"
+                />
+            <TextView
+                android:id="@+id/word_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="top"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Sad" />
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
