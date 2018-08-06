@@ -23,7 +23,7 @@ public class Categories {
     public Categories(Cursor data) {
         mID = OfflineTutorialDbHelper.getColumnInt(data, OfflineTutorialContract.CategoryEntry._ID);
         mTitle = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_TITLE);
-        mDescription = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_TITLE);
+        mDescription = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION);
     }
 
     public int getId() {

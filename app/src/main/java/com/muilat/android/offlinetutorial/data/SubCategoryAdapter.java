@@ -2,6 +2,7 @@ package com.muilat.android.offlinetutorial.data;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,17 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
 
-import java.util.ArrayList;
-
 public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter.ViewHolder> {
 
     //    private Cursor mCursor;
-    ArrayList<SubCategories> mSubCategories;
+    Cursor mCursor;
     private final String TAG = SubCategoryAdapter.class.getSimpleName();
 
     Context mContext;
@@ -52,10 +50,9 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
     @TargetApi(Build.VERSION_CODES.N)
     public void onBindViewHolder(SubCategoryAdapter.ViewHolder holder, int position) {
 
-//        mCursor.moveToPosition(position); // get to the right location in the cursor
+        mCursor.moveToPosition(position); // get to the right location in the cursor
 
-//        SubCategories subCategory = new SubCategories(mCursor);
-        SubCategories subCategory = mSubCategories.get(position);
+        SubCategories subCategory = new SubCategories(mCursor);
 
 //        if(user_lang_pref.equals(mContext.getResources().getString(R.string.pref_lang_hau_yor_value))){
 //            holder.name.setText(subCategory.getHausa()+"");
@@ -65,7 +62,8 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 //        }
 //        holder.name.setBackgroundColor(subCategory.getColorInt());
         holder.title.setText(subCategory.getTitle());
-        holder.subCategory_cardView.setTag(subCategory.getId());
+//        holder.subCategory_cardView.setTag(subCategory.getId());
+        holder.subCategory_cardView.setTag(subCategory);
 
         Log.e(TAG, subCategory.getTitle()+" is here");
 
@@ -73,10 +71,10 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 
     @Override
     public int getItemCount() {
-        if (mSubCategories == null) {
+        if (mCursor == null) {
             return 0;
         }
-        return mSubCategories.size();
+        return mCursor.getCount();
     }
 
     /**
@@ -87,21 +85,19 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
      * @return A new {@link SubCategories}
      */
     public SubCategories getItem(int position) {
-//        if (mCursor.moveToPosition(position)) {
-//            return new SubCategories(mCursor);
-//        }
-        if(position > -1 && position < getItemCount()){
-            return mSubCategories.get(position);
+        if (mCursor.moveToPosition(position)) {
+            return new SubCategories(mCursor);
         }
+
         return null;
     }
 
     /**
      * @param data update cursor
      */
-    public void swapCursor(ArrayList<SubCategories> data) {
+    public void swapCursor(Cursor data) {
         Log.e(TAG, "Swapping SubCategories");
-        mSubCategories = data;
+        mCursor = data;
         notifyDataSetChanged();
     }
 
@@ -118,8 +114,6 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
             super(itemView);
             title = itemView.findViewById(R.id.sub_category_title);
             subCategory_cardView = itemView.findViewById(R.id.sub_cat_card);
-
-
 
         }
     }

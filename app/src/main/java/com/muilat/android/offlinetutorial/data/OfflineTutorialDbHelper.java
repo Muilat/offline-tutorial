@@ -7,9 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
 import java.util.ArrayList;
 
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.CategoryEntry.CREATE_CATEGORIES_TABLE;
+import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.SubCategoryEntry.CREATE_SUB_CATEGORIES_TABLE;
+import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.LessonEntry.CREATE_LESSONS_TABLE;
+import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.QuizEntry.CREATE_QUIZ_TABLE;
 
 public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
 
@@ -28,19 +32,13 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
 
         Log.e(TAG, "attemmpting to create");
 
-        db.execSQL(CREATE_CATEGORIES_TABLE);/*create words table*/
+        db.execSQL(CREATE_CATEGORIES_TABLE);/*create categories table*/
+        db.execSQL(CREATE_SUB_CATEGORIES_TABLE);/*create subcategories table*/
+        db.execSQL(CREATE_LESSONS_TABLE);/*create lessons table*/
+        db.execSQL(CREATE_QUIZ_TABLE);/*create lessons table*/
 
-//        db.execSQL(CREATE_WORDS_TABLE);/*create words table*/
 
         Log.e(TAG, "Db created");
-
-        //only isert the asset from colourValue.json if the db is being created for the first time
-//        addInitWords(db);
-//
-//
-//        addInitCategories(db);
-        readCategoriesFromResources(db);
-
 
     }
 
@@ -54,11 +52,10 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
         }
         else
         {
-            //no alter query so drop the existing database
-            //drop words table
-//            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-
-            //drop words table
+            //drop table
+            db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.CategoryEntry.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.SubCategoryEntry.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.LessonEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.CategoryEntry.TABLE_NAME);
 
 
@@ -77,23 +74,26 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
         return cursor.getInt(cursor.getColumnIndex(name));
     }
 
-    private void readCategoriesFromResources(SQLiteDatabase db)  {
 
-        ArrayList<Categories> categories = Categories.dummyCategories();
 
-        for (Categories categegory: categories){
-            ContentValues contentValues = new ContentValues();
-            // Put the insect  into the ContentValues
-            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, categegory.getTitle());
-            contentValues.put(OfflineTutorialContract.CategoryEntry._ID, categegory.getId());
-            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, categegory.getDescription());
-            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, "12234");
 
-            long id =db.insert(OfflineTutorialContract.CategoryEntry.TABLE_NAME,null,contentValues);
-
-            Log.e(TAG, "including data: category "+id);
-
-        }
-    }
+//    private void readCategoriesFromResources(SQLiteDatabase db)  {
+//
+//        ArrayList<Categories> categories = Categories.dummyCategories();
+//
+//        for (Categories categegory: categories){
+//            ContentValues contentValues = new ContentValues();
+//            // Put the insect  into the ContentValues
+//            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, categegory.getTitle());
+//            contentValues.put(OfflineTutorialContract.CategoryEntry._ID, categegory.getId());
+//            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, categegory.getDescription());
+//            contentValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, "12234");
+//
+//            long id =db.insert(OfflineTutorialContract.CategoryEntry.TABLE_NAME,null,contentValues);
+//
+//            Log.e(TAG, "including data: category "+id);
+//
+//        }
+//    }
 
 }

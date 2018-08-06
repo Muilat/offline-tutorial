@@ -1,5 +1,6 @@
 package com.muilat.android.offlinetutorial;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -19,9 +20,10 @@ import com.muilat.android.offlinetutorial.data.SubCategoryAdapter;
 
 import java.util.ArrayList;
 
-import static com.muilat.android.offlinetutorial.data.SubCategories.getSubCatByCatId;
+import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.SubCategoryEntry.CONTENT_URI;
 
-public class SubCategoryFragment extends Fragment implements  LoaderManager.LoaderCallbacks<ArrayList<SubCategories>>  {
+
+public class SubCategoryFragment extends Fragment implements  LoaderManager.LoaderCallbacks<Cursor>  {
 
     private static final String TAG = SubCategoryFragment.class.getSimpleName();
     private static final int SUB_CATEGORY_LOADER_ID = 11123;
@@ -67,11 +69,11 @@ public class SubCategoryFragment extends Fragment implements  LoaderManager.Load
     }
 
     @Override
-    public Loader<ArrayList<SubCategories>> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<ArrayList<SubCategories>>(getActivity()) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<Cursor>(getActivity()) {
 
-            // Initialize a ArrayList<SubCategories>, this will hold all the Category data
-            ArrayList<SubCategories> mSubCategorysData = null;
+            // Initialize a Cursor, this will hold all the Category data
+            Cursor mSubCategorysData = null;
 
             // onStartLoading() is called when a loader first starts loading data
             @Override
@@ -87,7 +89,7 @@ public class SubCategoryFragment extends Fragment implements  LoaderManager.Load
 
             // loadInBackground() performs asynchronous loading of data
             @Override
-            public ArrayList<SubCategories> loadInBackground() {
+            public Cursor loadInBackground() {
                 String selection = null;
                 String[] selectionArgs = null;
                 if(category_id > 0){
@@ -96,12 +98,11 @@ public class SubCategoryFragment extends Fragment implements  LoaderManager.Load
                 }
 
                 try {
-//                    return getActivity().getContentResolver().query(CONTENT_URI,
-//                            null,
-//                            selection,
-//                            selectionArgs,
-//                            null);
-                    return getSubCatByCatId(category_id);
+                    return getActivity().getContentResolver().query(CONTENT_URI,
+                            null,
+                            selection,
+                            selectionArgs,
+                            null);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage()+" Failed to asynchronously load Categorys.");
                     e.printStackTrace();
@@ -109,7 +110,7 @@ public class SubCategoryFragment extends Fragment implements  LoaderManager.Load
                 }
             }
 
-            public void deliverResult(ArrayList<SubCategories> data) {
+            public void deliverResult(Cursor data) {
                 mSubCategorysData = data;
                 super.deliverResult(data);
             }
@@ -117,17 +118,15 @@ public class SubCategoryFragment extends Fragment implements  LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<SubCategories>> loader, ArrayList<SubCategories> data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mSubCategoryAdapter.swapCursor(data);
 //        Log.e(TAG, "No of cursor: "+data.getCount());
-        Log.e(TAG, "No of Subcategories: "+data.size());
-        Log.e(TAG, "No of Adapte item: "+mSubCategoryAdapter.getItemCount());
-
+        Log.e(TAG, "No of Subcategories: "+data.getCount());
 
     }
 
     @Override
-    public void onLoaderReset(Loader<ArrayList<SubCategories>> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         mSubCategoryAdapter.swapCursor(null);
     }
 

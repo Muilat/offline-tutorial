@@ -13,6 +13,10 @@
     <string name="favourites" translatable="false">Favourites</string>
     <string name="communicate" translatable="false">Communicate</string>
 
+    <string name="answer_correct">Congratulations! That is correct!</string>
+    <string name="answer_wrong">Sorry, that is not correct. Try again!</string>
+
+
     <!--text size strings-->
     <string name="pref_text_size_label_small">Small</string>
     <string name="pref_text_size_label_medium">Medium</string>
@@ -20,4 +24,7 @@
     <string name="pref_text_size_small_value" translatable="false">small_size</string>
     <string name="pref_text_size_medium_value" translatable="false">medium_size</string>
     <string name="pref_text_size_large_value" translatable="false">large_size</string>
+    <string name="action_quiz">Quiz</string>
+    <string name="pref_text_size_key">text_size_key</string>
+    <string name="pref_text_size_label">Text Size</string>
 </resources>

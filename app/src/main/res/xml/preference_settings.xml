@@ -14,11 +14,11 @@
     <!--android:key="@string/pref_size_key"-->
     <!--android:title="@string/pref_size_label" />-->
 
-    <!--<ListPreference-->
-        <!--android:defaultValue="@string/pref_text_small_value"-->
-        <!--android:entries="@array/pref_text_size_option_labels"-->
-        <!--android:entryValues="@array/pref_text_size_option_values"-->
-        <!--android:key="@string/pref_text_size_key"-->
-        <!--android:title="@string/pref_text_size_label" />-->
+    <ListPreference
+        android:defaultValue="@string/pref_text_size_small_value"
+        android:entries="@array/pref_text_size_option_labels"
+        android:entryValues="@array/pref_text_size_option_values"
+        android:key="@string/pref_text_size_key"
+        android:title="@string/pref_text_size_label" />
 
 </PreferenceScreen>

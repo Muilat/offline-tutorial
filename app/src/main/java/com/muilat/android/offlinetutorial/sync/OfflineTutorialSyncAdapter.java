@@ -167,7 +167,7 @@ public class OfflineTutorialSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, title);
                 offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, description);
-                offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
+//                offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
                 offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, modified_at);
                 offlineTutorialValues.put(OfflineTutorialContract.CategoryEntry._ID, id);
 

@@ -71,8 +71,6 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewH
 
         holder.sub_cat_recyclerView.setRecycledViewPool(viewPool);
 
-        Log.e(TAG, category.getTitle()+" is here");
-
     }
 
     @Override

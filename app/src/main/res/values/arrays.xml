@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label ordering must match values -->
-    <array name="pref_language_option_labels">
+    <array name="pref_text_size_option_labels">
         <item>@string/pref_text_size_label_small</item>
         <item>@string/pref_text_size_label_medium</item>
         <item>@string/pref_text_size_label_large</item>
     </array>
 
-    <array name="pref_text_size_values">
+    <array name="pref_text_size_option_values">
         <item>@string/pref_text_size_small_value</item>
         <item>@string/pref_text_size_medium_value</item>
         <item>@string/pref_text_size_large_value</item>

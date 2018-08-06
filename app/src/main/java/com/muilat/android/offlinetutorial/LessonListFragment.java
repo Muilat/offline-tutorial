@@ -3,78 +3,83 @@ package com.muilat.android.offlinetutorial;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.muilat.android.offlinetutorial.data.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
-import com.muilat.android.offlinetutorial.data.OfflineTutorialContract.LessonEntry;
+import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 
 import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity implements
+public class LessonListFragment  extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>  {
+    int sub_category_id = -1;
+    private static final int LESSON_LOADER_ID = 2222;
+    private static final String TAG = LessonListFragment.class.getName();
 
-    private static final int SEARCH_LOADER_ID = 1324;
-    private static final String TAG = SearchActivity.class.getSimpleName();
+    public static final String ARG_SUB_CATEGORY_ID = "sub_category_id";
+
     private LessonAdapter mLessonAdapter;
 
     ArrayList<Lessons> mLessons = new ArrayList<>();
 
     Cursor mLessonsCursor;
 
-    String queryText;
+
+
+    public LessonListFragment() {
+        // Required empty public constructor
+    }
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (getArguments() != null) {
+            sub_category_id = getArguments().getInt(ARG_SUB_CATEGORY_ID);
+        }
 
 
+        //Ensure a loader is initialized and active
+        getActivity().getSupportLoaderManager().initLoader(LESSON_LOADER_ID, null, this);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_lessons, container, false);
 
+        mLessonAdapter = new LessonAdapter();
 
-        SearchView searchView = findViewById(R.id.searchView);
-        searchView.setIconified(false);
-        searchView.setIconifiedByDefault(true);
-        searchView.requestFocusFromTouch();
+        RecyclerView recycler =  view.findViewById(R.id.lessons_recyclerView);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
+        recycler.setLayoutManager(layoutManager);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+        recycler.setItemAnimator(new DefaultItemAnimator()); //Animator for recycler view
+        recycler.setAdapter(mLessonAdapter);
+        recycler.setHasFixedSize(true);
+//TODO: showing loading bar
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                queryText = newText ;
-                if(newText.equals(""))
-                    return false;
-
-                //Ensure a loader is initialized and active
-                getSupportLoaderManager().initLoader(SEARCH_LOADER_ID, null, SearchActivity.this);
-
-                return true;
-            }
-        });
-
-//        searchView.setSuggestionsAdapter();
+        return view;
 
     }
-    @Override
+
+
+        @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<Cursor>(this) {
+        return new AsyncTaskLoader<Cursor>(getActivity()) {
 
             // Initialize a Cursor, this will hold all the Category data
 //            Cursor mCategoriesData = null;
@@ -96,17 +101,20 @@ public class SearchActivity extends AppCompatActivity implements
             @Override
             public Cursor loadInBackground() {
 
-                String wildCardQuery = "%"+queryText+"%";
+                String stringId = Long.toString(sub_category_id);
+                Uri uri = OfflineTutorialContract.LessonEntry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(stringId).build();
+
 
                 try {
-                    return getContentResolver().query(LessonEntry.CONTENT_URI,
+                    return getActivity().getContentResolver().query(uri,
                             null,
-                            LessonEntry.COLUMN_TITLE+" LIKE ? OR "+LessonEntry.COLUMN_DESCRIPTION+" LIKE ? ",
-                            new String[]{wildCardQuery,wildCardQuery},
+                            null,
+                            null,
                             null);
 //                    return Categories.dummyCategories();
                 } catch (Exception e) {
-                    Log.e(TAG, e.getMessage()+" Failed to asynchronously load Search results.");
+                    Log.e(TAG, e.getMessage()+" Failed to asynchronously load Lessons.");
                     e.printStackTrace();
                     return null;
                 }
@@ -121,7 +129,7 @@ public class SearchActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.e(TAG, "No of Search results: "+data.getCount());
+        Log.e(TAG, "No of Lessons: "+data.getCount());
 
 //        while(data.moveToNext()){
 //            mLessons.add(new Lessons(data));
@@ -145,18 +153,11 @@ public class SearchActivity extends AppCompatActivity implements
 //        mLessonAdapter.swapCursor(null);
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        // When the home button is pressed, take the user back to the previous Activity
-        if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
+    private void setLessonArrayList(Cursor data){
+        while(data.moveToNext()){
+//            mLessons.add(new Lessons(data));
         }
-        return super.onOptionsItemSelected(item);
-    }
 
-    public void closeSearch(View view) {
-        finish();
+
     }
 }

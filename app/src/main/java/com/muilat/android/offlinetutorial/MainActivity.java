@@ -1,7 +1,9 @@
 package com.muilat.android.offlinetutorial;
 
-import android.animation.Animator;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,15 +23,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.SubCategories;
 import com.muilat.android.offlinetutorial.data.SubCategoryAdapter;
-import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncAdapter;
+import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncIntentService;
+import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncUtils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     public static FragmentTransaction fragmentTransaction;
     public static FragmentManager fragmentManager;
+
+    public static ContentResolver contentResolver;
 
 
     RecyclerView selected_category;
@@ -47,8 +56,11 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent  quizIntent = new Intent(MainActivity.this, QuizActivity.class);
+//                quizIntent.pu
+                startActivity(quizIntent);
             }
         });
 
@@ -70,7 +82,14 @@ public class MainActivity extends AppCompatActivity
         mLongAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
 
         ///initialize SynAdapter
-        OfflineTutorialSyncAdapter.initializeSyncAdapter(this);
+//        OfflineTutorialSyncAdapter.initializeSyncAdapter(this);
+
+        contentResolver = getContentResolver();
+
+//        OfflineTutorialSyncUtils.initialize(this);
+        Intent intentToSyncImmediately = new Intent(this, OfflineTutorialSyncIntentService.class);
+        startService(intentToSyncImmediately);
+
     }
 
 
@@ -138,19 +157,34 @@ public class MainActivity extends AppCompatActivity
         subCat_recyclerView.setAdapter(mSubCategoryAdapter);
         subCat_recyclerView.setHasFixedSize(true);
 
-        mSubCategoryAdapter.swapCursor(SubCategories.getSubCatByCatId(category_id));
+        //Todo: change to TaskLoader
+        String stringId = Long.toString(category_id);
+        Uri uri = OfflineTutorialContract.SubCategoryEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+
+        Cursor cursor = getContentResolver().query(uri,
+                null,
+                null,
+                null,
+                null);
+        mSubCategoryAdapter.swapCursor(cursor);
+        Log.e(TAG, "No of SubCategories: "+cursor.getCount());
+
+
+
 
 
     }
 
     public void onSubCategoryClicked(View view){
 
-        int category_id = (int) view.findViewById(R.id.sub_cat_card).getTag();
+        SubCategories category = (SubCategories) view.findViewById(R.id.sub_cat_card).getTag();
 
 
         //go to details
-        Intent detailsIntent = new Intent(this, DetailsActivity.class);
-        detailsIntent.putExtra(DetailsActivity.EXTRA_SUB_CAT_ID, category_id);
+        Intent detailsIntent = new Intent(this, LessonActivity.class);
+        detailsIntent.putExtra(LessonActivity.EXTRA_SUB_CATEGORY, category);
         startActivity(detailsIntent);
                 //Get words
 //        SubCategoryFragment commonFragment = new SubCategoryFragment();
@@ -208,8 +242,11 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_favourites) {
             // Handle the favourites action
+            Intent favouriteIntent = new Intent(this, FavouriteActivity.class);
+            startActivity(favouriteIntent);
+            return true;
         } else if (id == R.id.nav_settings) {
-            Intent settingsIntent = new Intent(this, SearchActivity.class);
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
         } else if (id == R.id.nav_share) {
