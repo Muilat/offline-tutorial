@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.SubCategories;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 
     private int mLongAnimationDuration;
 
+    private long backPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                Intent  quizIntent = new Intent(MainActivity.this, QuizActivity.class);
+                Intent  quizIntent = new Intent(MainActivity.this, StartingQuizActivity.class);
 //                quizIntent.pu
                 startActivity(quizIntent);
             }
@@ -206,7 +208,15 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+                if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                    finish();
+                } else {
+                    Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+                }
+
+                backPressedTime = System.currentTimeMillis();
+
         }
     }
 

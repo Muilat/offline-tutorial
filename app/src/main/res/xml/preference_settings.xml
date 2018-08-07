@@ -9,10 +9,10 @@
     <!--android:summaryOn="@string/pref_show_true"-->
     <!--android:title="@string/pref_show_treble_label" />-->
 
-    <!--<EditTextPreference-->
-    <!--android:defaultValue="@string/pref_size_default"-->
-    <!--android:key="@string/pref_size_key"-->
-    <!--android:title="@string/pref_size_label" />-->
+    <EditTextPreference
+    android:defaultValue="@string/pref_quiz_no_default"
+    android:key="@string/pref_quiz_no_key"
+    android:title="@string/pref_quiz_no_label" />
 
     <ListPreference
         android:defaultValue="@string/pref_text_size_small_value"

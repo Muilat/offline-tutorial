@@ -136,4 +136,9 @@ public class FavouriteViewActivity extends AppCompatActivity {
         return lesson;
     }
 
+    public void onArrowBackClick(View view){
+        finish();
+
+    }
+
 }

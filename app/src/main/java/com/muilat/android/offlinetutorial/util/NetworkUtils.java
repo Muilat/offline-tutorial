@@ -2,7 +2,10 @@ package com.muilat.android.offlinetutorial.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
@@ -96,6 +99,7 @@ public class NetworkUtils {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static ArrayList<ContentValues[]> getOfflineTutorialContentValuesFromJson(Context context, String jsonOfflineTutorialString)throws JSONException {
         //we should check for error code but,.. api has only ok
 
@@ -110,20 +114,20 @@ public class NetworkUtils {
         JSONArray jsonQuizArray = offlineTutorialJson.getJSONArray("quiz");
 
 
+
         int last_check_time = offlineTutorialJson.getInt("last_check_time");
 
-        OfflineTutorialPreference.setPrefLastCheckTime(context,last_check_time);
 
         final String TITLE = "title";
         final String DESCRIPTION = "description";
         final String MODIFIED_AT = "modified_at";
-//        final String STATUS = "status";
+        final String STATUS = "status";
         final String ID ="id";
 
         String title;
         String description;
         int modified_at;
-        int id, status;
+        int id, status=1;
 
 
         //handle categories data
@@ -137,18 +141,22 @@ public class NetworkUtils {
             description = categoryObject.getString(DESCRIPTION);
             modified_at = categoryObject.getInt(MODIFIED_AT);
             id = categoryObject.getInt(ID);
-            //status = offlineTutorialDetails.getInt(STATUS);
+//            status = categoryObject.getInt(STATUS);
 
+//            status = checkRecordExistence(context, OfflineTutorialContract.CategoryEntry.CONTENT_URI, STATUS, id, categoryObject);
+//
+//            if (status == 1){
+                ContentValues categoryValue = new ContentValues();
 
-            ContentValues categoryValue = new ContentValues();
+                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, title);
+                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, description);
+                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
+                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, modified_at);
+                categoryValue.put(OfflineTutorialContract.CategoryEntry._ID, id);
 
-            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, title);
-            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, description);
-            //offlineTutorialValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
-            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, modified_at);
-            categoryValue.put(OfflineTutorialContract.CategoryEntry._ID, id);
+                categoryValues[i] = categoryValue;
 
-            categoryValues[i] = categoryValue;
+//            }
         }
 
         //handle subCategories data
@@ -166,16 +174,21 @@ public class NetworkUtils {
             id = subCategoryObject.getInt(ID);
             //status = offlineTutorialDetails.getInt(STATUS);
 
+//            status = checkRecordExistence(context, OfflineTutorialContract.SubCategoryEntry.CONTENT_URI, STATUS, id, subCategoryObject);
+//
+//            if (status==1){
+                ContentValues subCategoryValue = new ContentValues();
 
-            ContentValues subCategoryValue = new ContentValues();
+                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_TITLE, title);
+                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_CATEGORY_ID, category_id);
+                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_STATUS, status);
+                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_MODIFIED_AT, modified_at);
+                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry._ID, id);
 
-            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_TITLE, title);
-            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_CATEGORY_ID, category_id);
-            //offlineTutorialValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
-            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_MODIFIED_AT, modified_at);
-            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry._ID, id);
+                subCategoryValues[i] = subCategoryValue;
+//            }
 
-            subCategoryValues[i] = subCategoryValue;
+
         }
 
         //handle lessons data
@@ -194,17 +207,21 @@ public class NetworkUtils {
             id = lessonObject.getInt(ID);
             //status = offlineTutorialDetails.getInt(STATUS);
 
+//            status = checkRecordExistence(context, OfflineTutorialContract.LessonEntry.CONTENT_URI, STATUS, id, lessonObject);
+//            if (status==1){
+                ContentValues lessonValue = new ContentValues();
 
-            ContentValues lessonValue = new ContentValues();
+                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_TITLE, title);
+                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_DESCRIPTION, description);
+                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_SUB_CATEGORY_ID, sub_category_id);
+                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_STATUS, status);
+                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_MODIFIED_AT, modified_at);
+                lessonValue.put(OfflineTutorialContract.LessonEntry._ID, id);
 
-            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_TITLE, title);
-            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_DESCRIPTION, description);
-            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_SUB_CATEGORY_ID, sub_category_id);
-            //offlineTutorialValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
-            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_MODIFIED_AT, modified_at);
-            lessonValue.put(OfflineTutorialContract.LessonEntry._ID, id);
+                lessonValues[i] = lessonValue;
+//            }
 
-            lessonValues[i] = lessonValue;
+
         }
 
         //handle quiz data
@@ -227,21 +244,25 @@ public class NetworkUtils {
             String option3 = quizObject.getString("option3");
             String option4 = quizObject.getString("option4");
 
+//            status = checkRecordExistence(context, OfflineTutorialContract.QuizEntry.CONTENT_URI, STATUS, id, quizObject);
+//
+//            if(status == 1){
 
+                ContentValues quizValue = new ContentValues();
 
-            ContentValues lessonValue = new ContentValues();
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_QUESTION, question);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_ANSWER, answer);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION1, option1);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION2, option2);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION3, option3);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION4, option4);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_STATUS, status);
+                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_MODIFIED_AT, modified_at);
+                quizValue.put(OfflineTutorialContract.QuizEntry._ID, id);
 
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_QUESTION, question);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_ANSWER, answer);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION1, option1);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION2, option2);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION3, option3);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION4, option4);
-            //offlineTutorialValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
-            lessonValue.put(OfflineTutorialContract.QuizEntry.COLUMN_MODIFIED_AT, modified_at);
-            lessonValue.put(OfflineTutorialContract.QuizEntry._ID, id);
+                quizValues[i] = quizValue;
+//            }
 
-            quizValues[i] = lessonValue;
         }
 
         arrayListContentValues.add(categoryValues);
@@ -249,7 +270,38 @@ public class NetworkUtils {
         arrayListContentValues.add(lessonValues);
         arrayListContentValues.add(quizValues);
 
+        OfflineTutorialPreference.setPrefLastCheckTime(context,last_check_time);
 
         return arrayListContentValues;
     }
+
+//    private static int checkRecordExistence(Context context, Uri content_uri, String STATUS, int id, JSONObject jsonObject) throws JSONException {
+//        int status = 1;
+//        try{
+//            status = jsonObject.getInt(STATUS);
+//
+//        }finally {
+////                status = 1;
+//        }
+//        String stringId = Long.toString(id);
+//        Uri uri = content_uri;
+//        uri = uri.buildUpon().appendPath(stringId).build();
+//
+//        Cursor data = context.getContentResolver().query(uri,null,null,null,null);
+//
+//        if(data.getCount()>0){
+//            if(status== 0){
+//                //record deleted
+//                context.getContentResolver().delete(uri, null, null);
+//            }
+//            else{
+//                //record updated
+//                context.getContentResolver().update(uri,null,null,null);
+//            }
+//
+//
+//        }
+//
+//        return status;
+//    }
 }

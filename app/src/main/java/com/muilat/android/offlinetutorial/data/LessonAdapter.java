@@ -5,10 +5,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +27,7 @@ import com.muilat.android.offlinetutorial.FavouriteViewActivity;
 import com.muilat.android.offlinetutorial.LessonActivity;
 import com.muilat.android.offlinetutorial.LessonViewFragment;
 import com.muilat.android.offlinetutorial.R;
+import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 import java.util.ArrayList;
 
@@ -41,6 +45,8 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 
 //    String user_lang_pref;
 FragmentTransaction fragmentTransaction;
+    static Drawable d;
+
 
 
 
@@ -66,6 +72,7 @@ FragmentTransaction fragmentTransaction;
 
             }
         });
+        d = ContextCompat.getDrawable(mContext,R.drawable.first_letter_circle);
 
         return viewHolder;
     }
@@ -88,8 +95,9 @@ FragmentTransaction fragmentTransaction;
 //        lessonsArrayList.add(lesson);
 
 
+        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
 
-//        holder.name.setBackgroundColor(word.getColorInt());
+        holder.icon.setBackground(d);
         holder.title.setText(lesson.getTitle());
         holder.icon.setText(position+1+"");
         if(lesson.getDescription().length() >50){

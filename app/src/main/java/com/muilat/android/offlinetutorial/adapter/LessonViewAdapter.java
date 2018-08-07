@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.muilat.android.offlinetutorial.R;
 import com.muilat.android.offlinetutorial.data.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
+import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 import java.util.ArrayList;
 
@@ -70,6 +71,8 @@ public class LessonViewAdapter extends RecyclerView.Adapter<LessonViewAdapter.Vi
 
 //        holder.name.setBackgroundColor(word.getColorInt());
         holder.title.setText(lesson.getTitle());
+//        holder.title.setBackgroundColor(ColorUtil.generateColor());
+
 //        holder.icon.setText(position+"");
         holder.description.setText(lesson.getDescription());
         if (text_size_pref.equals(mContext.getResources().getString(R.string.pref_text_size_large_value))) {

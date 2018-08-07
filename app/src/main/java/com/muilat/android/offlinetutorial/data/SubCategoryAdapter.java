@@ -3,16 +3,22 @@ package com.muilat.android.offlinetutorial.data;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
+import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter.ViewHolder> {
 
@@ -23,6 +29,7 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
     Context mContext;
 
 //    String user_lang_pref;
+    static Drawable d;
 
 
 
@@ -43,6 +50,9 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 //            }
 //        });
 
+        d = ContextCompat.getDrawable(mContext,R.drawable.first_letter_circle);
+
+
         return viewHolder;
     }
 
@@ -62,10 +72,13 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 //        }
 //        holder.name.setBackgroundColor(subCategory.getColorInt());
         holder.title.setText(subCategory.getTitle());
-//        holder.subCategory_cardView.setTag(subCategory.getId());
+        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
+
+        holder.icon.setBackground(d);
+//        holder.icon.setText(subCategory.getTitle().substring(0,1));
         holder.subCategory_cardView.setTag(subCategory);
 
-        Log.e(TAG, subCategory.getTitle()+" is here");
+//        Log.e(TAG, subCategory.getTitle()+" is here");
 
     }
 
@@ -107,12 +120,14 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
+        public ImageView icon;
         CardView subCategory_cardView;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.sub_category_title);
+            icon = itemView.findViewById(R.id.sub_category_icon);
             subCategory_cardView = itemView.findViewById(R.id.sub_cat_card);
 
         }

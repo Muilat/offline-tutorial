@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
+import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
@@ -68,6 +69,8 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewH
         holder.title.setText(category.getTitle());
         holder.description.setText(category.getDescription());
         holder.category_cardView.setTag(category.getId());
+//        holder.category_cardView.setBackgroundColor(ColorUtil.generateColor());
+
 
         holder.sub_cat_recyclerView.setRecycledViewPool(viewPool);
 

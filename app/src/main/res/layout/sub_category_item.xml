@@ -10,17 +10,15 @@
 
     <LinearLayout
         android:padding="@dimen/activity_padding"
-        android:background="#fc0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/sub_category_icon"
-            android:text="Hii"
-            android:layout_gravity="center"
+            android:src="@drawable/literature"            android:layout_gravity="center"
             android:gravity="center"
             android:background="@drawable/first_letter_circle"
             />

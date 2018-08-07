@@ -40,13 +40,13 @@ public class OfflineTutorialContract  {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
-//        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_STATUS = "status";
 
         final static String CREATE_CATEGORIES_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
                 COLUMN_TITLE + " TEXT NOT NULL,"+
                 COLUMN_DESCRIPTION + " TEXT NOT NULL, "+
-//                COLUMN_STATUS + " INTEGER NULL, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }
 
@@ -60,13 +60,13 @@ public class OfflineTutorialContract  {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_CATEGORY_ID = "category_id";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
-//        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_STATUS = "status";
 
         final static String CREATE_SUB_CATEGORIES_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
                 COLUMN_TITLE + " TEXT NOT NULL,"+
                 COLUMN_CATEGORY_ID + " INTEGER NOT NULL, "+
-//                COLUMN_STATUS + " INTEGER NULL, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }
 
@@ -86,7 +86,7 @@ public class OfflineTutorialContract  {
         public static final String COLUMN_SUB_CATEGORY_ID = "sub_category_id";
         public static final String COLUMN_IS_FAVOURITE = "is_favourite";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
-//        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_STATUS = "status";
 
         final static String CREATE_LESSONS_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
@@ -94,6 +94,7 @@ public class OfflineTutorialContract  {
                 COLUMN_TITLE + " TEXT NOT NULL,"+
                 COLUMN_DESCRIPTION + " TEXT NOT NULL, "+
                 COLUMN_IS_FAVOURITE + " INTEGER NULL DEFAULT 0, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }
 
@@ -122,7 +123,7 @@ public class OfflineTutorialContract  {
                 COLUMN_OPTION2 + " TEXT NOT NULL, "+
                 COLUMN_OPTION3 + " TEXT NOT NULL, "+
                 COLUMN_OPTION4 + " TEXT NOT NULL, "+
-                COLUMN_STATUS + " INTEGER NULL, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }
 

@@ -263,16 +263,34 @@ public class OfflineTutorialContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         // Keep track of the number of deleted categories
         int categoriesDeleted; // starts as 0
-
+        String id;
         // Write the code to delete a single row of data
         // [Hint] Use selections to delete an item by its row ID
         switch (match) {
             // Handle the single item case, recognized by the ID included in the URI path
             case CATEGORY_WITH_ID:
                 // Get the task ID from the URI path
-                String id = uri.getPathSegments().get(1);
+                 id= uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
                 categoriesDeleted = db.delete(CategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            case SUB_CATEGORY_WITH_ID:
+                // Get the task ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                categoriesDeleted = db.delete(SubCategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            case LESSON_WITH_ID:
+                // Get the task ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                categoriesDeleted = db.delete(LessonEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            case QUIZ_WITH_ID:
+                // Get the task ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                categoriesDeleted = db.delete(QuizEntry.TABLE_NAME, "_id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -387,20 +405,27 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 
                 long _id =-1;
 
-                Cursor dataExist = db.query(table_name,
+                Log.e(TAG,value.getAsString("_id"));
+
+                Cursor data = db.query(table_name,
                         null,
                         "_id=?",//searh with csub_ategory_id not lesson id
                         new String[]{value.getAsString("_id")},
                         null,
                         null,
                         null);
-                if(dataExist!=null){
+                if(data.getCount()!=0){
+                    if(value.getAsInteger("status")==0){
+                        db.delete(table_name,"_id=?",
+                                new String[]{value.getAsString("_id")});
+                    }else {
+                        db.update(table_name,value,"_id=?",new String[]{value.getAsString("_id")});
+                    }
 //                    if(value.getAsString("_id"))
-                    db.delete(table_name,"_id=?",
-                            new String[]{value.getAsString("_id")});
-                }else{
-                    _id = db.insert(table_name, null, value);
 
+                }else{
+                    Log.e(TAG, "we are here");
+                    _id = db.insert(table_name, null, value);
                 }
 
                 if (_id != -1) {

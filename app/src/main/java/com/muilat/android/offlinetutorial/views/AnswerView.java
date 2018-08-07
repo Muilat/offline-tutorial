@@ -66,24 +66,24 @@ public class AnswerView extends RadioGroup implements RadioGroup.OnCheckedChange
      *
      * @param quizCursor List of possible answer choices. Correct answer should be in this list.
      */
-    public void loadAnswers(Cursor quizCursor) {
-//        quizCursor.moveToNext();
-        Quiz quiz = new Quiz(quizCursor);
-        mCorrectAnswer = quiz.getAnswer();
-        String[] answers = quiz.getOptions();
-
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        removeAllViews();
-        for (int i=0; i<answers.length;i++) {
-            if(answers[i].equals(mCorrectAnswer)){
-                correctIndex = i;
-            }
-            RadioButton button = (RadioButton) inflater.inflate(R.layout.quiz_item, this, false);
-            button.setText(answers[i]);
-
-            addView(button);
-        }
-    }
+//    public void loadAnswers(Cursor quizCursor) {
+////        quizCursor.moveToNext();
+//        Quiz quiz = new Quiz(quizCursor);
+//        mCorrectAnswer = quiz.getAnswer();
+//        String[] answers = quiz.getOptions();
+//
+//        LayoutInflater inflater = LayoutInflater.from(getContext());
+//        removeAllViews();
+//        for (int i=0; i<answers.length;i++) {
+//            if(answers[i].equals(mCorrectAnswer)){
+//                correctIndex = i;
+//            }
+//            RadioButton button = (RadioButton) inflater.inflate(R.layout.quiz_item, this, false);
+//            button.setText(answers[i]);
+//
+//            addView(button);
+//        }
+//    }
 
     /**
      * Returns whether the current selection matches the correct answer.

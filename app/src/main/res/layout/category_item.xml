@@ -18,14 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/cardview_dark_background"
             android:padding="@dimen/activity_vertical_margin">
-            <TextView
+            <ImageView
                 android:id="@+id/category_icon"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                style="@style/Base.TextAppearance.AppCompat.Large"/>
+                android:src="@drawable/books"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
