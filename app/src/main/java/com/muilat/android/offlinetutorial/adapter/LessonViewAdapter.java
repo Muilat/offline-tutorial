@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
-import com.muilat.android.offlinetutorial.data.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
-import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 import java.util.ArrayList;
 

@@ -28,6 +28,9 @@ public class NetworkUtils {
     private static final String OFFLINE_TUTORIAL_APP_URL =
             "http://muulat-champ.dx.am/api.php";
 
+    public static final String OFFLINE_TUTORIAL_APP_INFO_URL =
+            "http://muulat-champ.dx.am/api.php";
+
     //            "http://http://muulat-champ.dx.am/api.php";
     private static final String INITIAL_QUERY = "init_data";
     private static final String UPDATE_QUERY = "new_data";
@@ -275,33 +278,17 @@ public class NetworkUtils {
         return arrayListContentValues;
     }
 
-//    private static int checkRecordExistence(Context context, Uri content_uri, String STATUS, int id, JSONObject jsonObject) throws JSONException {
-//        int status = 1;
-//        try{
-//            status = jsonObject.getInt(STATUS);
-//
-//        }finally {
-////                status = 1;
-//        }
-//        String stringId = Long.toString(id);
-//        Uri uri = content_uri;
-//        uri = uri.buildUpon().appendPath(stringId).build();
-//
-//        Cursor data = context.getContentResolver().query(uri,null,null,null,null);
-//
-//        if(data.getCount()>0){
-//            if(status== 0){
-//                //record deleted
-//                context.getContentResolver().delete(uri, null, null);
-//            }
-//            else{
-//                //record updated
-//                context.getContentResolver().update(uri,null,null,null);
-//            }
-//
-//
-//        }
-//
-//        return status;
-//    }
+    public static JSONObject getInfo() throws JSONException {
+        String response;
+        try {
+            //yeah it says getCat but it just a name,its getting info
+            response = getCategoriesResponseFromHttpUrl(new URL(OFFLINE_TUTORIAL_APP_INFO_URL));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return  new JSONObject(response);
+
+    }
 }

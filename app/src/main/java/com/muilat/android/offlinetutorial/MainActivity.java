@@ -1,14 +1,15 @@
 package com.muilat.android.offlinetutorial;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +27,7 @@ import android.widget.Toast;
 
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.SubCategories;
-import com.muilat.android.offlinetutorial.data.SubCategoryAdapter;
+import com.muilat.android.offlinetutorial.adapter.SubCategoryAdapter;
 import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncIntentService;
 import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncUtils;
 
@@ -88,10 +89,13 @@ public class MainActivity extends AppCompatActivity
 
         contentResolver = getContentResolver();
 
-//        OfflineTutorialSyncUtils.initialize(this);
-        Intent intentToSyncImmediately = new Intent(this, OfflineTutorialSyncIntentService.class);
-        startService(intentToSyncImmediately);
+        if(savedInstanceState == null){
+            OfflineTutorialSyncUtils.initialize(this);
+            Intent intentToSyncImmediately = new Intent(this, OfflineTutorialSyncIntentService.class);
+            startService(intentToSyncImmediately);
 
+        }
+//
     }
 
 
@@ -260,13 +264,49 @@ public class MainActivity extends AppCompatActivity
             startActivity(settingsIntent);
             return true;
         } else if (id == R.id.nav_share) {
+            String textToShare = "Checkout "+getString(R.string.app_name);
+            textToShare += "\nInstall from http://play.google.com/store/apps/details?id=" + getPackageName();
 
+            Intent shareIntent = ShareCompat.IntentBuilder.from(MainActivity.this)
+                    .setText(textToShare)
+                    .setChooserTitle("Share Developer with")
+                    .setSubject(getString(R.string.app_name))
+                    .setType("text/plain")
+                    .createChooserIntent();
+
+            if(shareIntent.resolveActivity(getPackageManager()) != null){
+                startActivity(shareIntent);
+            }
         } else if (id == R.id.nav_send) {
 
-        }
+        } else if (id == R.id.nav_rate_app) {
+
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=" + getPackageName())));
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+            }
+        }else if(id==R.id.nav_about){
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+            intent.putExtra(InfoActivity.EXTRA_INFO_TYPE, InfoActivity.EXTRA_INFO_TYPE_ABOUT);
+            startActivity(intent);
+        }else if(id==R.id.nav_policy){
+        Intent intent = new Intent(MainActivity.this, InfoActivity.class);
+        intent.putExtra(InfoActivity.EXTRA_INFO_TYPE, InfoActivity.EXTRA_INFO_TYPE_PRIVACY_POLICY);
+        startActivity(intent);
+    }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+//        outState.putBoolean("data_fetched", data_fetched);
+        super.onSaveInstanceState(outState);
+    }
+
 }

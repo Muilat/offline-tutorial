@@ -3,7 +3,6 @@ package com.muilat.android.offlinetutorial;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -13,16 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import com.muilat.android.offlinetutorial.data.Categories;
-import com.muilat.android.offlinetutorial.data.CategoryAdapter;
+import com.muilat.android.offlinetutorial.adapter.CategoryAdapter;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
-
-import java.util.ArrayList;
-
-import static com.muilat.android.offlinetutorial.MainActivity.fragmentManager;
-import static com.muilat.android.offlinetutorial.MainActivity.fragmentTransaction;
 
 public class CategoryFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>  {
@@ -31,10 +23,7 @@ public class CategoryFragment extends Fragment implements
     private static final String TAG = CategoryFragment.class.getName();
     private CategoryAdapter mCategoryAdapter;
 
-    LinearLayout subCat_holder_linearLayout;
-    RecyclerView subCat_recyclerView;
-
-    LinearLayout selected_category;
+    boolean data_fetched = false;
 
 
     public CategoryFragment() {
@@ -50,10 +39,18 @@ public class CategoryFragment extends Fragment implements
 
         }
 
+        if(savedInstanceState == null){
+            //Ensure a loader is initialized and active
+            getActivity().getSupportLoaderManager().initLoader(CATEGORY_LOADER_ID, null, this);
 
-        //Ensure a loader is initialized and active
-        getActivity().getSupportLoaderManager().initLoader(CATEGORY_LOADER_ID, null, this);
-    }
+        }else {
+            if(!savedInstanceState.getBoolean("data_fetched")){
+                getActivity().getSupportLoaderManager().initLoader(CATEGORY_LOADER_ID, null, this);
+
+            }
+        }
+
+     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,6 +82,7 @@ public class CategoryFragment extends Fragment implements
             @Override
             protected void onStartLoading() {
                 if (mCategoriesData != null) {
+                    data_fetched = true;
                     // Delivers any previously loaded data immediately
                     deliverResult(mCategoriesData);
                 } else {
@@ -121,6 +119,8 @@ public class CategoryFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCategoryAdapter.swapCursor(data);
+        data_fetched = true;
+
 //        Log.e(TAG, "No of cursor: "+data.getCount());
         Log.e(TAG, "No of Categories: "+data.getCount());
 
@@ -168,12 +168,18 @@ public class CategoryFragment extends Fragment implements
         super.onResume();
 
         // re-queries for all Categories
-        getActivity().getSupportLoaderManager().restartLoader(CATEGORY_LOADER_ID, null, this);
+//        getActivity().getSupportLoaderManager().restartLoader(CATEGORY_LOADER_ID, null, this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("data_fetched", data_fetched);
+        super.onSaveInstanceState(outState);
     }
 
 

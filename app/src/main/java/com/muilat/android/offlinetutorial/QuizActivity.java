@@ -1,20 +1,26 @@
 package com.muilat.android.offlinetutorial;
+import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.Quiz;
 
@@ -268,13 +274,36 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (backPressedTime + 2000 > System.currentTimeMillis()) {
-            finishQuiz();
-        } else {
-            Toast.makeText(this, "Press back again to finish", Toast.LENGTH_SHORT).show();
-        }
+        final Dialog exitQuizDialog = new Dialog(QuizActivity.this);
 
-        backPressedTime = System.currentTimeMillis();
+        exitQuizDialog.setContentView(R.layout.negative_dialog);
+        ImageView closeDialog = exitQuizDialog.findViewById(R.id.close_dialog);
+        Button confrimExit = exitQuizDialog.findViewById(R.id.confirm);
+        TextView dialogMessage = exitQuizDialog.findViewById(R.id.dialog_message);
+
+        confrimExit.setText(R.string.exit);
+        dialogMessage.setText(R.string.exit_message);
+
+
+        closeDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                exitQuizDialog.dismiss();
+            }
+        });
+
+        confrimExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(QuizActivity.this, "Quiz exited!", Toast.LENGTH_SHORT).show();
+                exitQuizDialog.dismiss();
+                finish();
+            }
+        });
+
+        exitQuizDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        exitQuizDialog.show();
     }
 
     @Override

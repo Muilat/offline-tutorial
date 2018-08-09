@@ -13,7 +13,7 @@ public class Lessons implements Parcelable {
     private String mTitle;
     private int mSubCategoryID;
     private String mDescription;
-    private String mIsFavourite;
+    public String mIsFavourite;
 
     public Lessons(Cursor data) {
         mID = OfflineTutorialDbHelper.getColumnInt(data, OfflineTutorialContract.LessonEntry._ID);
@@ -34,7 +34,7 @@ public class Lessons implements Parcelable {
 
     protected Lessons(Parcel in) {
         mID = in.readInt();
-//        mCategoryID = in.readInt();
+        mIsFavourite = in.readString();
         mTitle = in.readString();
         mSubCategoryID = in.readInt();
         mDescription = in.readString();
@@ -74,8 +74,13 @@ public class Lessons implements Parcelable {
         return mDescription;
     }
 
+    public void setIsFavourite(String mIsFavourite) {
+        this.mIsFavourite = mIsFavourite;
+    }
+
     public boolean isFavourite(){
         if (mIsFavourite.equals("0"))
+
             return false;
         else
             return true;
@@ -84,7 +89,7 @@ public class Lessons implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(mID);
-//        parcel.writeInt(mCategoryID);
+        parcel.writeString(mIsFavourite);
         parcel.writeString(mTitle);
         parcel.writeInt(mSubCategoryID);
         parcel.writeString(mDescription);

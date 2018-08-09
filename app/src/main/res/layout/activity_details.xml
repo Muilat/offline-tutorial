@@ -10,6 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="5dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -39,7 +40,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:id="@+id/toolbar_title"
-                        android:textSize="12sp"
+                        android:textSize="16sp"
                         tools:text="Details"
                         android:paddingLeft="@dimen/padding_8dp"
                         android:paddingStart="@dimen/padding_8dp"
@@ -55,6 +56,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:id="@+id/action_icon_layout"
                         >
 
                         <ImageView
@@ -64,33 +66,53 @@
                             android:src="@drawable/ic_favorite_border_white_24dp"
                             android:layout_marginRight="@dimen/padding_8dp"
                             android:layout_marginLeft="@dimen/padding_8dp"
-                            android:visibility="gone"/>
+                            />
                         <ImageView
                             android:id="@+id/content_copy"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_content_copy_white_24dp"
                             android:layout_marginRight="@dimen/padding_8dp"
-                            android:layout_marginLeft="@dimen/padding_8dp"
-                            android:visibility="gone" />
+                            android:layout_marginLeft="@dimen/padding_8dp" />
                         <ImageView
                             android:id="@+id/share"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_share_white_24dp"
                             android:layout_marginRight="@dimen/padding_8dp"
-                            android:layout_marginLeft="@dimen/padding_8dp"
-                            android:visibility="gone" />
+                            android:layout_marginLeft="@dimen/padding_8dp" />
                     </LinearLayout>
 
-                    <ImageView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_search_white_24dp"
-                        android:id="@+id/action_search"
-                        android:onClick="onSearchClick">
+                        android:layout_marginEnd="@dimen/padding_8dp"
+                        android:layout_marginRight="@dimen/padding_8dp">
 
-                    </ImageView>
+                        <TextView
+                            android:id="@+id/lesson_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="@string/lesson_report" />
+
+                        <TextView
+                            android:id="@+id/lesson_total"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
             </RelativeLayout>
@@ -99,17 +121,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/lessons_recyclerView">
+
+        </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lesson_container">
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/lessons_recyclerView">-->
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/nav_button_layout">
 
-        <!--</android.support.v7.widget.RecyclerView>-->
-    </FrameLayout>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Previous"
+            android:id="@+id/previous_button"
+            android:layout_weight="1"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Next"
+            android:id="@+id/next_button"
+            android:layout_weight="1"/>
 
-
+    </LinearLayout>
 </LinearLayout>

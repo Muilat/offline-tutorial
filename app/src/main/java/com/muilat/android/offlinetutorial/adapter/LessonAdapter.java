@@ -1,18 +1,15 @@
-package com.muilat.android.offlinetutorial.data;
+package com.muilat.android.offlinetutorial.adapter;
 
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,15 +20,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.FavouriteActivity;
-import com.muilat.android.offlinetutorial.FavouriteViewActivity;
 import com.muilat.android.offlinetutorial.LessonActivity;
 import com.muilat.android.offlinetutorial.LessonViewFragment;
 import com.muilat.android.offlinetutorial.R;
+import com.muilat.android.offlinetutorial.data.Lessons;
+import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 import java.util.ArrayList;
 
-import static com.muilat.android.offlinetutorial.LessonActivity.fragmentManager;
 
 public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder> {
 
@@ -44,7 +41,6 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
     ArrayList<Lessons> lessonsArrayList;
 
 //    String user_lang_pref;
-FragmentTransaction fragmentTransaction;
     static Drawable d;
 
 
@@ -79,7 +75,7 @@ FragmentTransaction fragmentTransaction;
 
     @Override
     @TargetApi(Build.VERSION_CODES.N)
-    public void onBindViewHolder(LessonAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(LessonAdapter.ViewHolder holder, final int position) {
 
         //if cursor is one goto lessonview
         if(lessonsArrayList.size() == 1){
@@ -113,17 +109,8 @@ FragmentTransaction fragmentTransaction;
             holder.favourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //remove from favoirites
-                    String stringId = Long.toString(lesson.getID());
-                    Uri uri = OfflineTutorialContract.LessonEntry.CONTENT_URI;
-                    uri = uri.buildUpon().appendPath(stringId).build();
+                    removeReaddFav(view, lesson, position);
 
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(OfflineTutorialContract.LessonEntry.COLUMN_IS_FAVOURITE, 0);
-                    mContext.getContentResolver().update(uri,contentValues,null,null);
-
-                    lessonsArrayList.remove(lesson);
-                    notifyDataSetChanged();
 
                 }
             });
@@ -135,31 +122,45 @@ FragmentTransaction fragmentTransaction;
 
     }
 
-    private void loadLessonView(int position) {
-        //use LessonViewFragment to list show
-        LessonViewFragment lessonViewFragment = new LessonViewFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(LessonViewFragment.ARG_LESSONS,lessonsArrayList);
-        args.putInt(LessonViewFragment.ARG_LESSON_POSITION,position);
-        lessonViewFragment.setArguments(args);
+    private void removeReaddFav(View view, final Lessons lesson, final int position) {
+        //remove from favoirites
+        String stringId = Long.toString(lesson.getID());
+        Uri uri = OfflineTutorialContract.LessonEntry.CONTENT_URI;
+        final Uri appended_uri = uri.buildUpon().appendPath(stringId).build();
 
-        if(mContext instanceof LessonActivity){
-            //use lesson static variables
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.lesson_container,lessonViewFragment );
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+        final ContentValues contentValues = new ContentValues();
+        contentValues.put(OfflineTutorialContract.LessonEntry.COLUMN_IS_FAVOURITE, 0);
+        mContext.getContentResolver().update(appended_uri,contentValues,null,null);
 
-        }else {
-
-            Intent favouriteViewIntent = new Intent(mContext,FavouriteViewActivity.class );
-            favouriteViewIntent.putParcelableArrayListExtra(FavouriteViewActivity.EXTRA_FAVOURITES, lessonsArrayList);
-            favouriteViewIntent.putExtra(FavouriteViewActivity.EXTRA_POSITION, position);
-            mContext.startActivity(favouriteViewIntent);
+        /*This removes the item from the recycler view*/
+        lessonsArrayList.remove(lesson);
+        if (lessonsArrayList.isEmpty()){
+            FavouriteActivity.favouriteEmpty();
         }
+        notifyDataSetChanged();
 
+        Snackbar snackbar = Snackbar.make(view,lesson.getTitle()+ " deleted from favorites!", Snackbar.LENGTH_LONG);
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                //TODO:resave the item to db
+                contentValues.put(OfflineTutorialContract.LessonEntry.COLUMN_IS_FAVOURITE, 1);
+                mContext.getContentResolver().update(appended_uri,contentValues,null,null);
+                lessonsArrayList.add(position, lesson);
+                notifyDataSetChanged();
+            }
+        });
+        snackbar.setActionTextColor(mContext.getResources().getColor(R.color.colorCorrect));
+        snackbar.show();
+    }
+
+    private void loadLessonView(int position) {
+
+        Intent lessonViewIntent = new Intent(mContext, LessonViewFragment.class);
+        lessonViewIntent.putParcelableArrayListExtra(LessonViewFragment.ARG_LESSONS,lessonsArrayList);
+        lessonViewIntent.putExtra(LessonViewFragment.ARG_LESSON_POSITION,position);
+        mContext.startActivity(lessonViewIntent);
 
     }
 

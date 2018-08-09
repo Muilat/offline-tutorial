@@ -3,7 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="@dimen/activity_padding">
+    android:background="@color/colorBackground"
+    android:padding="@dimen/padding_8dp"
+    android:paddingBottom="0dp"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -11,12 +14,22 @@
         android:text="Lesson title"
         android:id="@+id/lesson_title"
         android:gravity="center"
+        android:textColor="@color/colorText"
+        android:elevation="5dp"
+        android:layout_marginBottom="8dp"
         style="@style/Base.TextAppearance.AppCompat.Large"
         />
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/lesson_description"
-        android:text="match_parent match_parent match_parent match_parent match_parent match_parent match_parent match_parent match_parent "/>
+        android:background="@color/colorWhite">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lesson_description"
+            android:text="match_parent match_parent match_parent match_parent match_parent "
+            android:padding="@dimen/padding_8dp"/>
+
+    </ScrollView>
 
 </LinearLayout>

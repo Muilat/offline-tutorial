@@ -30,5 +30,18 @@
     <string name="pref_quiz_no_default">10</string>
     <string name="pref_quiz_no_key">quiz_number</string>
     <string name="pref_quiz_no_label">Number of Quiz</string>
-    <string name="designed_developed_by_muilat"><![CDATA[Designed & Developed by Muilat]]></string>
+    <string name="designed_developed_by_muilat"><![CDATA[Designed & Developed by <a href="linkedin.com/muilat">Muilat</a>]]></string>
+    <string name="lesson_report">/</string>
+    <string name="rate_app">Rate App</string>
+    <string name="share">Share</string>
+    <string name="others">Others</string>
+    <string name="about">About</string>
+    <string name="no_data_found">No data Found!</string>
+    <string name="are_you_sure_you_want_to_delete_all_favourite_lessons">Are you sure you want to delete all favourite lessons?</string>
+    <string name="action_confirm">Action confirmation!</string>
+    <string name="exit">Yes Exit</string>
+    <string name="exit_message">Do you really want to exit quiz?</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="app_slogan">Learn with fun</string>
 </resources>

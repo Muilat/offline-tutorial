@@ -1,4 +1,4 @@
-package com.muilat.android.offlinetutorial.data;
+package com.muilat.android.offlinetutorial.adapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
-import com.muilat.android.offlinetutorial.util.ColorUtil;
+import com.muilat.android.offlinetutorial.data.Categories;
 
 public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 

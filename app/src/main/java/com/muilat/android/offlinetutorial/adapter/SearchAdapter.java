@@ -2,7 +2,10 @@ package com.muilat.android.offlinetutorial.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.muilat.android.offlinetutorial.LessonViewFragment;
 import com.muilat.android.offlinetutorial.R;
 import com.muilat.android.offlinetutorial.SearchActivity;
 import com.muilat.android.offlinetutorial.data.Lessons;
@@ -26,6 +30,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private ArrayList<Lessons> searchList;
     private ArrayList<Lessons> searchListFull;
     private Context mContext;
+    static Drawable d;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     public SearchAdapter(Context context, ArrayList<Lessons> searchList) {
         this.searchList = searchList;
-        searchListFull = new ArrayList<>(searchList);
+        searchListFull = searchList;
         this.mContext = context;
     }
 
@@ -67,17 +72,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
                 int position = viewHolder.getAdapterPosition();
 //                Lessons lesson = getItem(position);
-
-//                loadLessonView(position);
-
-//                Intent searchIntent = new Intent(mContext, SearchActivity.class);
-//                searchIntent.putParcelableArrayListExtra(SearchActivity.EXTRA_SEARCHES, searchList);
-//                searchIntent.putExtra(SearchActivity.EXTRA_POSITION, position);
-//                mContext.startActivity(searchIntent);
-
+                Intent lessonViewIntent = new Intent(mContext, LessonViewFragment.class);
+                lessonViewIntent.putParcelableArrayListExtra(LessonViewFragment.ARG_LESSONS,searchList);
+                lessonViewIntent.putExtra(LessonViewFragment.ARG_LESSON_POSITION,position);
+                mContext.startActivity(lessonViewIntent);
 
             }
         });
+        d = ContextCompat.getDrawable(mContext,R.drawable.first_letter_circle);
+
         return viewHolder;
     }
 
@@ -87,7 +90,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         holder.title.setText(lesson.getTitle());
         holder.icon.setText(position+1+"");
-        holder.icon.setBackgroundColor(ColorUtil.generateColor());
+
+        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
+
         if(lesson.getDescription().length() >50){
             holder.description.setText(lesson.getDescription().substring(0,47)+"...");
 
@@ -117,7 +122,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Lessons> filteredList = new ArrayList<>();
+            ArrayList<Lessons> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(searchListFull);
@@ -141,7 +146,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             searchList.clear();
-            searchList.addAll((List) results.values);
+            searchList.addAll((ArrayList) results.values);
             notifyDataSetChanged();
         }
     };

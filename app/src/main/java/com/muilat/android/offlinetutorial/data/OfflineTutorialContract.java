@@ -93,7 +93,7 @@ public class OfflineTutorialContract  {
                 COLUMN_SUB_CATEGORY_ID+ " INTEGER  NOT NULL, " +
                 COLUMN_TITLE + " TEXT NOT NULL,"+
                 COLUMN_DESCRIPTION + " TEXT NOT NULL, "+
-                COLUMN_IS_FAVOURITE + " INTEGER NULL DEFAULT 0, "+
+                COLUMN_IS_FAVOURITE + " INTEGER NOT NULL DEFAULT 0, "+
                 COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }

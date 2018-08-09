@@ -13,12 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.muilat.android.offlinetutorial.data.SubCategories;
-import com.muilat.android.offlinetutorial.data.SubCategoryAdapter;
-
-import java.util.ArrayList;
+import com.muilat.android.offlinetutorial.adapter.SubCategoryAdapter;
 
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.SubCategoryEntry.CONTENT_URI;
 

@@ -1,9 +1,8 @@
-package com.muilat.android.offlinetutorial.data;
+package com.muilat.android.offlinetutorial.adapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -18,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
+import com.muilat.android.offlinetutorial.data.SubCategories;
 import com.muilat.android.offlinetutorial.util.ColorUtil;
 
 public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter.ViewHolder> {

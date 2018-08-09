@@ -1,26 +1,19 @@
 package com.muilat.android.offlinetutorial;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.muilat.android.offlinetutorial.adapter.SearchAdapter;
-import com.muilat.android.offlinetutorial.data.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract.LessonEntry;
 
@@ -48,9 +41,15 @@ public class SearchActivity extends AppCompatActivity {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (getIntent() != null){
+//        if (getIntent().hasExtra(EXTRA_SEARCHES)){
+//            mLessons = getIntent().getParcelableArrayListExtra(EXTRA_SEARCHES);
+//        }else{
+            mLessonsCursor = getContentResolver().query(LessonEntry.CONTENT_URI,null,null,null,null);
 
-        }
+            while (mLessonsCursor.moveToNext()){
+                mLessons.add(new Lessons(mLessonsCursor));
+            }
+//        }
 
 
 
@@ -67,11 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.requestFocusFromTouch();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        mLessonsCursor = getContentResolver().query(LessonEntry.CONTENT_URI,null,null,null,null);
 
-        while (mLessonsCursor.moveToNext()){
-            mLessons.add(new Lessons(mLessonsCursor));
-        }
 
         mSearchAdapter = new SearchAdapter(this, mLessons);
         recycler.setAdapter(mSearchAdapter);
@@ -86,6 +81,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 mSearchAdapter.getFilter().filter(newText);
+
                 return false;
             }
         });

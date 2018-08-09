@@ -343,7 +343,7 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 
         // Notify the resolver of a change and return the number of items deleted
         if (itemUpdated != 0) {
-            // A task was deleted, set notification
+            // An item was updated, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
@@ -359,12 +359,6 @@ public class OfflineTutorialContentProvider extends ContentProvider {
     }
 
     /**
-     * Handles requests to insert a set of new rows. In Sunshine, we are only going to be
-     * inserting multiple rows of data at a time from a weather forecast. There is no use case
-     * for inserting a single row of data into our ContentProvider, and so we are only going to
-     * implement bulkInsert. In a normal ContentProvider's implementation, you will probably want
-     * to provide proper functionality for the insert method as well.
-     *
      * @param uri    The content:// URI of the insertion request.
      * @param values An array of sets of column_name/value pairs to add to the database.
      *               This must not be {@code null}.
@@ -405,7 +399,7 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 
                 long _id =-1;
 
-                Log.e(TAG,value.getAsString("_id"));
+//                Log.e(TAG,value.getAsString("_id"));
 
                 Cursor data = db.query(table_name,
                         null,
@@ -424,12 +418,14 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 //                    if(value.getAsString("_id"))
 
                 }else{
-                    Log.e(TAG, "we are here");
+//                    Log.e(TAG, "we are here");
                     _id = db.insert(table_name, null, value);
                 }
 
                 if (_id != -1) {
                     rowsInserted++;
+                    getContext().getContentResolver().notifyChange(uri, null);
+
                 }
             }
             db.setTransactionSuccessful();
