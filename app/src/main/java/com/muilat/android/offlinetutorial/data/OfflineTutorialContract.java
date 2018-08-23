@@ -29,6 +29,8 @@ public class OfflineTutorialContract  {
 
     public final static String PATH_QUIZ = "quiz";
     public final static String PATH_FAVOURITES = "favourites";
+    public final static String PATH_NOTIFICATIONS = "notifications";
+
 
     //categories table
     public static final class CategoryEntry implements BaseColumns {
@@ -41,11 +43,14 @@ public class OfflineTutorialContract  {
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
         public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_ICON = "icon";
 
         final static String CREATE_CATEGORIES_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
                 COLUMN_TITLE + " TEXT NOT NULL,"+
                 COLUMN_DESCRIPTION + " TEXT NOT NULL, "+
+//                COLUMN_ICON + " BLOB NULL, "+
+                COLUMN_ICON + " TEXT NULL, "+
                 COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }
@@ -123,6 +128,31 @@ public class OfflineTutorialContract  {
                 COLUMN_OPTION2 + " TEXT NOT NULL, "+
                 COLUMN_OPTION3 + " TEXT NOT NULL, "+
                 COLUMN_OPTION4 + " TEXT NOT NULL, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
+                COLUMN_MODIFIED_AT + " INT NOT NULL);";
+    }
+
+
+    //notification table
+    public static final class NotificationEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_NOTIFICATIONS).build();
+
+        public static final String TABLE_NAME = "notifications";
+
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_MESSAGE = "message";
+        public static final String COLUMN_MODIFIED_AT = "modified_at";
+        public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_IMAGE = "image";
+        public static final String COLUMN_LINK = "link";
+
+        final static String CREATE_NOTIFICATION_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
+                _ID+ " INTEGER  NOT NULL, " +
+                COLUMN_TITLE + " TEXT NOT NULL,"+
+                COLUMN_MESSAGE + " TEXT NOT NULL,"+
+                COLUMN_LINK + " TEXT NOT NULL, "+
+                COLUMN_IMAGE + " TEXT NOT NULL, "+
                 COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }

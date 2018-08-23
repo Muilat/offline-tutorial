@@ -15,16 +15,18 @@ import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.*;
 
 public class OfflineTutorialContentProvider extends ContentProvider {
 
-    public static final int CATEGORIES = 100;
+    public static final int CATEGORIES = 110;
     public static final int SUB_CATEGORIES = 120;
     public static final int LESSONS = 130;
     public static final int QUIZ = 140;
     public static final int FAVOURITES = 150;
+    public static final int NOTIFICATIONS = 160;
 
     public static final int CATEGORY_WITH_ID = 101;
     public static final int SUB_CATEGORY_WITH_ID = 102;
     public static final int LESSON_WITH_ID = 103;
     public static final int QUIZ_WITH_ID = 104;
+    public static final int NOTIFICATION_WITH_ID = 106;
 
 
     // Declare a static variable for the Uri matcher that you construct
@@ -54,6 +56,8 @@ public class OfflineTutorialContentProvider extends ContentProvider {
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_LESSONS + "/#", LESSON_WITH_ID);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ, QUIZ);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ + "/#", QUIZ_WITH_ID);
+        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_NOTIFICATIONS, NOTIFICATIONS);
+        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_NOTIFICATIONS + "/#", NOTIFICATION_WITH_ID);
 
         return uriMatcher;
     }
@@ -93,15 +97,22 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                 returnUri = insertSingleValue(uri, db, values, SubCategoryEntry.TABLE_NAME);
 
                 break;
-            case QUIZ:
-                // Insert new values into the database
-                // Inserting values into categories table
-                returnUri = insertSingleValue(uri, db, values, QuizEntry.TABLE_NAME);
+
             case LESSONS:
                 // Insert new values into the database
                 // Inserting values into categories table
                 returnUri = insertSingleValue(uri, db, values, LessonEntry.TABLE_NAME);
 
+                break;
+            case QUIZ:
+                // Insert new values into the database
+                // Inserting values into categories table
+                returnUri = insertSingleValue(uri, db, values, QuizEntry.TABLE_NAME);
+                break;
+            case NOTIFICATIONS:
+                // Insert new values into the database
+                // Inserting values into notification table
+                returnUri = insertSingleValue(uri, db, values, NotificationEntry.TABLE_NAME);
                 break;
 //            // Set the value for the returnedUri and write the default case for unknown URI's
             // Default case throws an UnsupportedOperationException
@@ -206,6 +217,18 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+
+            // Handle the favourites case, recognized by the ID included in the URI path
+            case FAVOURITES:
+
+                retCursor =  db.query(LessonEntry.TABLE_NAME,
+                        projection,
+                        "is_favourite=?",
+                        new String[]{"1"},
+                        null,
+                        null,
+                        sortOrder);
+                break;
             // Query for the quiz directory
             case QUIZ:
                 retCursor =  db.query(QuizEntry.TABLE_NAME,
@@ -230,13 +253,26 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            // Handle the single category case, recognized by the ID included in the URI path
-            case FAVOURITES:
-
-                retCursor =  db.query(LessonEntry.TABLE_NAME,
+            // Query for the notitications directory
+            case NOTIFICATIONS:
+                retCursor =  db.query(NotificationEntry.TABLE_NAME,
                         projection,
-                        "is_favourite=?",
-                        new String[]{"1"},
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            // Handle the single notification case, recognized by the ID included in the URI path
+            case NOTIFICATION_WITH_ID: //lesson with sub_category_id
+                // Get the task ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+
+                retCursor =  db.query(NotificationEntry.TABLE_NAME,
+                        projection,
+                        "_id=?",//searh with csub_ategory_id not lesson id
+                        new String[]{id},
                         null,
                         null,
                         sortOrder);
@@ -262,7 +298,7 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 
         int match = sUriMatcher.match(uri);
         // Keep track of the number of deleted categories
-        int categoriesDeleted; // starts as 0
+        int recordsDeleted; // starts as 0
         String id;
         // Write the code to delete a single row of data
         // [Hint] Use selections to delete an item by its row ID
@@ -272,38 +308,47 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                 // Get the task ID from the URI path
                  id= uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                categoriesDeleted = db.delete(CategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
+                recordsDeleted = db.delete(CategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
                 break;
             case SUB_CATEGORY_WITH_ID:
                 // Get the task ID from the URI path
                 id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                categoriesDeleted = db.delete(SubCategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
+                recordsDeleted = db.delete(SubCategoryEntry.TABLE_NAME, "_id=?", new String[]{id});
                 break;
             case LESSON_WITH_ID:
                 // Get the task ID from the URI path
                 id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                categoriesDeleted = db.delete(LessonEntry.TABLE_NAME, "_id=?", new String[]{id});
+                recordsDeleted = db.delete(LessonEntry.TABLE_NAME, "_id=?", new String[]{id});
                 break;
             case QUIZ_WITH_ID:
                 // Get the task ID from the URI path
                 id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                categoriesDeleted = db.delete(QuizEntry.TABLE_NAME, "_id=?", new String[]{id});
+                recordsDeleted = db.delete(QuizEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            case NOTIFICATION_WITH_ID:
+                // Get the task ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                recordsDeleted = db.delete(NotificationEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            case NOTIFICATIONS:
+                recordsDeleted = db.delete(NotificationEntry.TABLE_NAME, null, null);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         // Notify the resolver of a change and return the number of items deleted
-        if (categoriesDeleted != 0) {
+        if (recordsDeleted != 0) {
             // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of categories deleted
-        return categoriesDeleted;
+        return recordsDeleted;
     }
 
 
@@ -336,6 +381,17 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                 // Use selections/selectionArgs to filter for this ID
 
                 itemUpdated = db.update(LessonEntry.TABLE_NAME,values, "_id=?", new String[]{id});
+                break;
+            case NOTIFICATION_WITH_ID:
+                // Get the category ID from the URI path
+                id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+
+                itemUpdated = db.update(NotificationEntry.TABLE_NAME,values, "_id=?", new String[]{id});
+                break;
+            case NOTIFICATIONS:
+
+                itemUpdated = db.update(NotificationEntry.TABLE_NAME,values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -384,6 +440,8 @@ public class OfflineTutorialContentProvider extends ContentProvider {
             case QUIZ:
                 return insertValues(uri, values, db, QuizEntry.TABLE_NAME);
 
+            case NOTIFICATIONS:
+                return insertValues(uri, values, db, NotificationEntry.TABLE_NAME);
 
             default:
                 return super.bulkInsert(uri, values);

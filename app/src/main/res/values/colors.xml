@@ -27,6 +27,9 @@
 
     <color name="colorBackground">#BCAAA4</color>
     <color name="colorRedDark">#801b20</color>
+    <color name="colorRedLight">#defa8181</color>
+    <color name="colorGreenDark">#247b37</color>
+    <color name="colorGreenLight">#abffc0</color>
     <color name="colorGrey">#d1cbcb</color>
 
 </resources>

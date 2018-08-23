@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.muilat.android.offlinetutorial.MainActivity;
+import com.muilat.android.offlinetutorial.SplashActivity;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.util.NetworkUtils;
 
@@ -33,14 +34,14 @@ public class OfflineTutorialSyncIntentService extends IntentService {
              * longitude or off of a simple location as a String.
              */
             URL offlineTutorialRequestUrl = NetworkUtils.getUrl(this);
-            Log.e(TAG, offlineTutorialRequestUrl.toString());
+//            Log.e(TAG, offlineTutorialRequestUrl.toString());
 
             /* Use the URL to retrieve the JSON */
             String jsonOfflineTutorialResponse = NetworkUtils.getCategoriesResponseFromHttpUrl(offlineTutorialRequestUrl);
-            Log.e(TAG, jsonOfflineTutorialResponse);
+//            Log.e(TAG, jsonOfflineTutorialResponse);
 
             /* Get a handle on the ContentResolver to delete and insert data */
-            ContentResolver offlineTutorialContentResolver = MainActivity.contentResolver;
+            ContentResolver offlineTutorialContentResolver = SplashActivity.contentResolver;
 
 
             /* Parse the JSON into a list of offlineTutorial values */
@@ -50,6 +51,7 @@ public class OfflineTutorialSyncIntentService extends IntentService {
             ContentValues[] subCategoriesValues = offlineTutorialValues.get(1);
             ContentValues[] lessonsValues = offlineTutorialValues.get(2);
             ContentValues[] quizValues = offlineTutorialValues.get(3);
+            ContentValues[] notificationValues = offlineTutorialValues.get(4);
             /*
              * In cases where our JSON contained an error code, getOfflineTutorialContentValuesFromJson
              * would have returned null. We need to check for those cases here to prevent any
@@ -57,15 +59,6 @@ public class OfflineTutorialSyncIntentService extends IntentService {
              * there isn't any to insert.
              */
             if (categoriesValues != null && categoriesValues.length != 0) {
-
-
-                //                ContentResolver offlineTutorialContentResolver = context.getContentResolver();
-                //TODO:get for duplicate or edited to delete
-                /* Delete old offlineTutorial data because we don't need to keep multiple days' data */
-//                sunshineContentResolver.delete(
-//                        OfflineTutorialContract.CategoryEntry.CONTENT_URI,
-//                        null,
-//                        null);
 
                 /* Insert our new category data into OfflineTutorial's ContentProvider */
                 offlineTutorialContentResolver.bulkInsert(
@@ -76,37 +69,14 @@ public class OfflineTutorialSyncIntentService extends IntentService {
 
             if (subCategoriesValues != null && subCategoriesValues.length != 0) {
 
-
-                //                ContentResolver offlineTutorialContentResolver = context.getContentResolver();
-                //TODO:get for duplicate or edited to delete
-                /* Delete old offlineTutorial data because we don't need to keep multiple days' data */
-//                sunshineContentResolver.delete(
-//                        OfflineTutorialContract.CategoryEntry.CONTENT_URI,
-//                        null,
-//                        null);
-
                 /* Insert our new subcategory data into OfflineTutorial's ContentProvider */
                 offlineTutorialContentResolver.bulkInsert(
                         OfflineTutorialContract.SubCategoryEntry.CONTENT_URI,
                         subCategoriesValues);
             }
 
-            /*
-             * In cases where our JSON contained an error code, getOfflineTutorialContentValuesFromJson
-             * would have returned null. We need to check for those cases here to prevent any
-             * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
-             * there isn't any to insert.
-             */
+
             if (lessonsValues != null && lessonsValues.length != 0) {
-
-
-                //                ContentResolver offlineTutorialContentResolver = context.getContentResolver();
-                //TODO:get for duplicate or edited to delete
-                /* Delete old offlineTutorial data because we don't need to keep multiple days' data */
-//                sunshineContentResolver.delete(
-//                        OfflineTutorialContract.CategoryEntry.CONTENT_URI,
-//                        null,
-//                        null);
 
                 /* Insert our new lesson data into OfflineTutorial's ContentProvider */
                 offlineTutorialContentResolver.bulkInsert(
@@ -114,27 +84,21 @@ public class OfflineTutorialSyncIntentService extends IntentService {
                         lessonsValues);
             }
 
-            /*
-             * In cases where our JSON contained an error code, getOfflineTutorialContentValuesFromJson
-             * would have returned null. We need to check for those cases here to prevent any
-             * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
-             * there isn't any to insert.
-             */
+
             if (quizValues != null && quizValues.length != 0) {
-
-
-                //                ContentResolver offlineTutorialContentResolver = context.getContentResolver();
-                //TODO:get for duplicate or edited to delete
-                /* Delete old offlineTutorial data because we don't need to keep multiple days' data */
-//                sunshineContentResolver.delete(
-//                        OfflineTutorialContract.CategoryEntry.CONTENT_URI,
-//                        null,
-//                        null);
 
                 /* Insert our new lesson data into OfflineTutorial's ContentProvider */
                 offlineTutorialContentResolver.bulkInsert(
                         OfflineTutorialContract.QuizEntry.CONTENT_URI,
                         quizValues);
+            }
+
+            if (notificationValues != null && notificationValues.length != 0) {
+
+                /* Insert our new notification data into OfflineTutorial's ContentProvider */
+                offlineTutorialContentResolver.bulkInsert(
+                        OfflineTutorialContract.NotificationEntry.CONTENT_URI,
+                        notificationValues);
             }
 
 

@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,10 @@ import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.LessonViewFragment;
 import com.muilat.android.offlinetutorial.R;
-import com.muilat.android.offlinetutorial.SearchActivity;
 import com.muilat.android.offlinetutorial.data.Lessons;
-import com.muilat.android.offlinetutorial.util.ColorUtil;
+import com.muilat.android.offlinetutorial.util.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> implements Filterable {
     private ArrayList<Lessons> searchList;
@@ -91,7 +88,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         holder.title.setText(lesson.getTitle());
         holder.icon.setText(position+1+"");
 
-        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
+        d.setColorFilter(Utils.generateColor(), PorterDuff.Mode.DARKEN);
 
         if(lesson.getDescription().length() >50){
             holder.description.setText(lesson.getDescription().substring(0,47)+"...");

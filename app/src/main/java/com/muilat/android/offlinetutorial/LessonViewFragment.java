@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,9 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.muilat.android.offlinetutorial.adapter.LessonViewAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
+import com.muilat.android.offlinetutorial.pref.OfflineTutorialPreference;
 
 import java.util.ArrayList;
 
@@ -43,6 +48,7 @@ public class LessonViewFragment extends AppCompatActivity {
 
     public ArrayList<Lessons> mLesson = new ArrayList<>();
     static int mPosition = 0;
+    private InterstitialAd interstitialAd;
 
 
     public LessonViewFragment(){
@@ -186,7 +192,7 @@ public class LessonViewFragment extends AppCompatActivity {
                     android.content.ClipData clipData = ClipData.newPlainText("Copied text" ,textToCopy);
                     clipboardManager.setPrimaryClip(clipData);
                 }
-                Toast.makeText(LessonViewFragment.this, lesson.getTitle()+" copied to clipboard", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LessonViewFragment.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -210,6 +216,56 @@ public class LessonViewFragment extends AppCompatActivity {
                 }
             }
         });
+
+        //interstitialAd
+        interstitialAd = new InterstitialAd(LessonViewFragment.this);
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Log.e(TAG, "ad closed");
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                Log.e(TAG, "ad failed");
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                Log.e(TAG, "ad left application");
+
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.e(TAG, "ad opened");
+
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.e(TAG, "ad loaded");
+
+            }
+        });
+
+        //interstitialAd
+        Handler handlerInterstitialAd = new Handler();
+        handlerInterstitialAd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                interstitialAd.setAdUnitId(OfflineTutorialPreference.getInterstitialId(LessonViewFragment.this));
+
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        },3000);
 
     }
 
@@ -245,11 +301,13 @@ public class LessonViewFragment extends AppCompatActivity {
     }
 
     public void onArrowBackClick(View view){
+
         finish();
     }
 
     @Override
     public void onBackPressed() {
+        showInterstitialAd();
         finish();
     }
 
@@ -258,5 +316,11 @@ public class LessonViewFragment extends AppCompatActivity {
         outState.putInt(ARG_LESSON_POSITION, mPosition);
         outState.putParcelableArrayList(ARG_LESSONS, mLesson);
         super.onSaveInstanceState(outState);
+    }
+
+    private void showInterstitialAd(){
+        if(interstitialAd != null && interstitialAd.isLoaded()){
+            interstitialAd.show();
+        }
     }
 }

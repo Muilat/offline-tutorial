@@ -3,6 +3,8 @@ package com.muilat.android.offlinetutorial.adapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
 import com.muilat.android.offlinetutorial.data.Categories;
+import com.squareup.picasso.Picasso;
 
 public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
@@ -59,20 +63,30 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewH
 
         Categories category = new Categories(mCursor);
 
-//        if(user_lang_pref.equals(mContext.getResources().getString(R.string.pref_lang_hau_yor_value))){
-//            holder.name.setText(category.getHausa()+"");
-//
-//        }else {
-//            holder.name.setText(category.getName()+"");
-//        }
-//        holder.name.setBackgroundColor(category.getColorInt());
         holder.title.setText(category.getTitle());
-        holder.description.setText(category.getDescription());
-        holder.category_cardView.setTag(category.getId());
+//        holder.description.setText(category.getDescription());
+//        byte[] image = category.getIcon();
+        String image = category.getIcon();
+
+        if(image != null && !image.equals("")){
+            Picasso.get().load(image)
+                    .placeholder(R.drawable.books)
+                    .into(holder.icon);
+
+//            Log.e(TAG, image);
+//            Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+//
+//            holder.icon.setImageBitmap(Bitmap.createScaledBitmap(bmp, 100,
+//                    100, false));
+        }
+
+
+        holder.category_cardView.setTag(category);
+//        holder.itemView.setTag(category);
 //        holder.category_cardView.setBackgroundColor(ColorUtil.generateColor());
 
 
-        holder.sub_cat_recyclerView.setRecycledViewPool(viewPool);
+//        holder.sub_cat_recyclerView.setRecycledViewPool(viewPool);
 
     }
 
@@ -115,16 +129,18 @@ public class CategoryAdapter  extends RecyclerView.Adapter<CategoryAdapter.ViewH
 
         public TextView title, description;
         CardView category_cardView;
-        RecyclerView sub_cat_recyclerView;
+        ImageView icon;
+//        RecyclerView sub_cat_recyclerView;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.category_title);
-            description = itemView.findViewById(R.id.category_description);
+//            description = itemView.findViewById(R.id.category_description);
+            icon = itemView.findViewById(R.id.category_icon);
             category_cardView = itemView.findViewById(R.id.category_card);
 
-            sub_cat_recyclerView = itemView.findViewById(R.id.sub_cat_recyclerView);
+//            sub_cat_recyclerView = itemView.findViewById(R.id.sub_cat_recyclerView);
 
         }
     }

@@ -25,7 +25,7 @@ import com.muilat.android.offlinetutorial.LessonViewFragment;
 import com.muilat.android.offlinetutorial.R;
 import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
-import com.muilat.android.offlinetutorial.util.ColorUtil;
+import com.muilat.android.offlinetutorial.util.Utils;
 
 import java.util.ArrayList;
 
@@ -91,7 +91,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
 //        lessonsArrayList.add(lesson);
 
 
-        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
+        d.setColorFilter(Utils.generateColor(), PorterDuff.Mode.DARKEN);
 
         holder.icon.setBackground(d);
         holder.title.setText(lesson.getTitle());

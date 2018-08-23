@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.util.NetworkUtils;
+import com.muilat.android.offlinetutorial.util.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,15 +51,20 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
         infoTextView = findViewById(R.id.info_text);
         progressBar = findViewById(R.id.progress_bar);
 
+        //adView
+        LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
+        Utils.loadAdView(this, adViewLinearLayout);
+
+
         if(savedInstanceState == null){
-            checkNetworkFetch();
+            checkNetworkAndFetchInfo();
 
         }
         else
         {
             info = savedInstanceState.getString("info");
             if (info.equals("")){
-                checkNetworkFetch();
+                checkNetworkAndFetchInfo();
 
             }{
                 progressBar.setVisibility(View.GONE);
@@ -77,7 +83,7 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    private void checkNetworkFetch() {
+    private void checkNetworkAndFetchInfo() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

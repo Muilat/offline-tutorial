@@ -30,7 +30,7 @@
     <string name="pref_quiz_no_default">10</string>
     <string name="pref_quiz_no_key">quiz_number</string>
     <string name="pref_quiz_no_label">Number of Quiz</string>
-    <string name="designed_developed_by_muilat"><![CDATA[Designed & Developed by <a href="linkedin.com/muilat">Muilat</a>]]></string>
+    <string name="designed_developed_by_muilat">Designed &amp; Developed by Muilat-champ</string>
     <string name="lesson_report">/</string>
     <string name="rate_app">Rate App</string>
     <string name="share">Share</string>
@@ -44,4 +44,6 @@
     <string name="no_internet">No internet connection</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="app_slogan">Learn with fun</string>
+    <string name="quiz_result">Quiz Result</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

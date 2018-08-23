@@ -26,12 +26,8 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String OFFLINE_TUTORIAL_APP_URL =
-            "http://muulat-champ.dx.am/api.php";
+            "https://muilat-champ.000webhostapp.com/api.php";
 
-    public static final String OFFLINE_TUTORIAL_APP_INFO_URL =
-            "http://muulat-champ.dx.am/api.php";
-
-    //            "http://http://muulat-champ.dx.am/api.php";
     private static final String INITIAL_QUERY = "init_data";
     private static final String UPDATE_QUERY = "new_data";
     private static final String LAST_CHECK_TIME = "last_check_time";
@@ -115,6 +111,10 @@ public class NetworkUtils {
         JSONArray jsonSubCategoryArray = offlineTutorialJson.getJSONArray("sub_categories");
         JSONArray jsonLessonArray = offlineTutorialJson.getJSONArray("lessons");
         JSONArray jsonQuizArray = offlineTutorialJson.getJSONArray("quiz");
+        JSONArray jsonNotificationArray = offlineTutorialJson.getJSONArray("notifications");
+
+        //
+        JSONArray jsonAdmobSettingsArray = offlineTutorialJson.getJSONArray("adMobSettings");
 
 
 
@@ -130,7 +130,7 @@ public class NetworkUtils {
         String title;
         String description;
         int modified_at;
-        int id, status=1;
+        int id, status;
 
 
         //handle categories data
@@ -142,24 +142,22 @@ public class NetworkUtils {
 
             title = categoryObject.getString(TITLE);
             description = categoryObject.getString(DESCRIPTION);
+            String icon = categoryObject.getString("icon");
+            status = categoryObject.getInt(STATUS);
             modified_at = categoryObject.getInt(MODIFIED_AT);
             id = categoryObject.getInt(ID);
-//            status = categoryObject.getInt(STATUS);
-
-//            status = checkRecordExistence(context, OfflineTutorialContract.CategoryEntry.CONTENT_URI, STATUS, id, categoryObject);
-//
-//            if (status == 1){
                 ContentValues categoryValue = new ContentValues();
 
-                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, title);
-                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, description);
-                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
-                categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, modified_at);
-                categoryValue.put(OfflineTutorialContract.CategoryEntry._ID, id);
+            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_TITLE, title);
+            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION, description);
+            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_ICON, icon);
+//            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_ICON, Utils.getByteArrayFromUrl(icon));
+            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_STATUS, status);
+            categoryValue.put(OfflineTutorialContract.CategoryEntry.COLUMN_MODIFIED_AT, modified_at);
+            categoryValue.put(OfflineTutorialContract.CategoryEntry._ID, id);
 
-                categoryValues[i] = categoryValue;
+            categoryValues[i] = categoryValue;
 
-//            }
         }
 
         //handle subCategories data
@@ -175,22 +173,16 @@ public class NetworkUtils {
             int category_id = subCategoryObject.getInt("category_id");
             modified_at = subCategoryObject.getInt(MODIFIED_AT);
             id = subCategoryObject.getInt(ID);
-            //status = offlineTutorialDetails.getInt(STATUS);
+            status = subCategoryObject.getInt(STATUS);
+            ContentValues subCategoryValue = new ContentValues();
 
-//            status = checkRecordExistence(context, OfflineTutorialContract.SubCategoryEntry.CONTENT_URI, STATUS, id, subCategoryObject);
-//
-//            if (status==1){
-                ContentValues subCategoryValue = new ContentValues();
+            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_TITLE, title);
+            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_CATEGORY_ID, category_id);
+            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_STATUS, status);
+            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_MODIFIED_AT, modified_at);
+            subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry._ID, id);
 
-                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_TITLE, title);
-                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_CATEGORY_ID, category_id);
-                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_STATUS, status);
-                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry.COLUMN_MODIFIED_AT, modified_at);
-                subCategoryValue.put(OfflineTutorialContract.SubCategoryEntry._ID, id);
-
-                subCategoryValues[i] = subCategoryValue;
-//            }
-
+            subCategoryValues[i] = subCategoryValue;
 
         }
 
@@ -199,8 +191,6 @@ public class NetworkUtils {
 
         for (int i = 0; i < jsonLessonArray.length(); i++) {
 
-
-
             JSONObject lessonObject = jsonLessonArray.getJSONObject(i);
 
             title = lessonObject.getString(TITLE);
@@ -208,22 +198,17 @@ public class NetworkUtils {
             int sub_category_id = lessonObject.getInt("sub_category_id");
             modified_at = lessonObject.getInt(MODIFIED_AT);
             id = lessonObject.getInt(ID);
-            //status = offlineTutorialDetails.getInt(STATUS);
+            status = lessonObject.getInt(STATUS);
+            ContentValues lessonValue = new ContentValues();
 
-//            status = checkRecordExistence(context, OfflineTutorialContract.LessonEntry.CONTENT_URI, STATUS, id, lessonObject);
-//            if (status==1){
-                ContentValues lessonValue = new ContentValues();
+            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_TITLE, title);
+            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_DESCRIPTION, description);
+            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_SUB_CATEGORY_ID, sub_category_id);
+            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_STATUS, status);
+            lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_MODIFIED_AT, modified_at);
+            lessonValue.put(OfflineTutorialContract.LessonEntry._ID, id);
 
-                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_TITLE, title);
-                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_DESCRIPTION, description);
-                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_SUB_CATEGORY_ID, sub_category_id);
-                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_STATUS, status);
-                lessonValue.put(OfflineTutorialContract.LessonEntry.COLUMN_MODIFIED_AT, modified_at);
-                lessonValue.put(OfflineTutorialContract.LessonEntry._ID, id);
-
-                lessonValues[i] = lessonValue;
-//            }
-
+            lessonValues[i] = lessonValue;
 
         }
 
@@ -232,39 +217,58 @@ public class NetworkUtils {
 
         for (int i = 0; i < jsonQuizArray.length(); i++) {
 
-
-
             JSONObject quizObject = jsonQuizArray.getJSONObject(i);
-
 
             modified_at = quizObject.getInt(MODIFIED_AT);
             id = quizObject.getInt(ID);
-            //status = offlineTutorialDetails.getInt(STATUS);
             String question = quizObject.getString("question");
             String answer = quizObject.getString("answer");
             String option1 = quizObject.getString("option1");
             String option2 = quizObject.getString("option2");
             String option3 = quizObject.getString("option3");
             String option4 = quizObject.getString("option4");
+            status = quizObject.getInt(STATUS);
 
-//            status = checkRecordExistence(context, OfflineTutorialContract.QuizEntry.CONTENT_URI, STATUS, id, quizObject);
-//
-//            if(status == 1){
+            ContentValues quizValue = new ContentValues();
 
-                ContentValues quizValue = new ContentValues();
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_QUESTION, question);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_ANSWER, answer);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION1, option1);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION2, option2);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION3, option3);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION4, option4);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_STATUS, status);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_MODIFIED_AT, modified_at);
+            quizValue.put(OfflineTutorialContract.QuizEntry._ID, id);
 
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_QUESTION, question);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_ANSWER, answer);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION1, option1);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION2, option2);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION3, option3);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION4, option4);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_STATUS, status);
-                quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_MODIFIED_AT, modified_at);
-                quizValue.put(OfflineTutorialContract.QuizEntry._ID, id);
+            quizValues[i] = quizValue;
 
-                quizValues[i] = quizValue;
-//            }
+        }
+
+        //handle quiz data
+        ContentValues[] notificationValues = new ContentValues[jsonNotificationArray.length()];
+
+        for (int i = 0; i < jsonNotificationArray.length(); i++) {
+
+            JSONObject notificationObject = jsonNotificationArray.getJSONObject(i);
+
+            modified_at = notificationObject.getInt(MODIFIED_AT);
+            id = notificationObject.getInt(ID);
+            title = notificationObject.getString("title");
+            String message = notificationObject.getString("message");
+            String link = notificationObject.getString("link");
+            String image = notificationObject.getString("image");
+
+            ContentValues notificationValue = new ContentValues();
+
+            notificationValue.put(OfflineTutorialContract.NotificationEntry.COLUMN_TITLE, title);
+            notificationValue.put(OfflineTutorialContract.NotificationEntry.COLUMN_MESSAGE, message);
+            notificationValue.put(OfflineTutorialContract.NotificationEntry.COLUMN_LINK, link);
+            notificationValue.put(OfflineTutorialContract.NotificationEntry.COLUMN_IMAGE, image);
+            notificationValue.put(OfflineTutorialContract.NotificationEntry.COLUMN_MODIFIED_AT, modified_at);
+            notificationValue.put(OfflineTutorialContract.NotificationEntry._ID, id);
+
+            notificationValues[i] = notificationValue;
 
         }
 
@@ -272,8 +276,25 @@ public class NetworkUtils {
         arrayListContentValues.add(subCategoryValues);
         arrayListContentValues.add(lessonValues);
         arrayListContentValues.add(quizValues);
+        arrayListContentValues.add(notificationValues);
 
+        //it needs not be an arra, yes, but the api sends array ):
+        for(int i = 0; i<jsonAdmobSettingsArray.length(); i++){
+            String publisherId, bannerId, interstitialId;
+
+            JSONObject adMob = jsonAdmobSettingsArray.getJSONObject(i);
+            publisherId = adMob.getString("publisher_id");
+            bannerId = adMob.getString("banner_ad_id");
+            interstitialId = adMob.getString("interstitial_ad_id");
+
+            OfflineTutorialPreference.setPref(context, publisherId, bannerId, interstitialId);
+
+        }
+
+        //last check time
         OfflineTutorialPreference.setPrefLastCheckTime(context,last_check_time);
+
+
 
         return arrayListContentValues;
     }
@@ -282,7 +303,7 @@ public class NetworkUtils {
         String response;
         try {
             //yeah it says getCat but it just a name,its getting info
-            response = getCategoriesResponseFromHttpUrl(new URL(OFFLINE_TUTORIAL_APP_INFO_URL));
+            response = getCategoriesResponseFromHttpUrl(new URL(OFFLINE_TUTORIAL_APP_URL));
 
         } catch (IOException e) {
             e.printStackTrace();

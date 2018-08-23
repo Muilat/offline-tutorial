@@ -1,107 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:padding="16dp"
-    tools:context=".QuizActivity">
+    android:orientation="vertical"
+    android:background="@color/colorBackground">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:id="@+id/relativeLayout">
 
-    <TextView
-        android:id="@+id/text_view_score"
-        android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNumberOfQuestions"
+                android:text="Offline Tutorial Quiz"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#673ab7"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvQuestion"
+                android:layout_below="@+id/tvNumberOfQuestions"
+                android:text="Question question"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:textStyle="normal"
+                android:textColor="#000000"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroup1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvQuestion"
+                android:layout_marginTop="6dp"
+                android:layout_weight="0.04" >
+                <RadioButton
+                    android:id="@+id/radio0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RadioButton" />
+                <RadioButton
+                    android:id="@+id/radio1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RadioButton" />
+                <RadioButton
+                    android:id="@+id/radio2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RadioButton" />
+                <RadioButton
+                    android:id="@+id/radio3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="RadioButton" />
+            </RadioGroup>
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+    <Button
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Score: 0"
-        android:textColor="@android:color/black"
-        android:freezesText="true"/>
+        android:text="Next Question"
+        android:textColor="#ffffff"
+        android:padding="6dp"
+        android:layout_marginBottom="@dimen/padding_8dp"
+        android:id="@+id/btnNext"
+        android:background="@drawable/round_primary_edge"
+        android:layout_gravity="center" />
 
-    <TextView
-        android:id="@+id/text_view_quiz_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_view_score"
-        android:text="Question: 1/x"
-        android:textColor="@android:color/black"
-        android:freezesText="true"/>
-
-    <TextView
-        android:id="@+id/text_view_countdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:text="00:30"
-        android:textColor="@android:color/black"
-        android:textSize="40sp"
-        android:freezesText="true"
-        android:layout_alignParentRight="true" />
-
-    <TextView
-        android:id="@+id/text_view_quiz"
+    <LinearLayout
+        android:id="@+id/adViewLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/radio_group"
-        android:layout_marginBottom="16dp"
-        android:text="Here will be the quiz text\nHere will be the quiz text\nHere will be the quiz text"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:freezesText="true"/>
-
-    <RadioGroup
-        android:id="@+id/radio_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
-
-        <RadioButton
-            android:id="@+id/radio_button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 1"
-            android:freezesText="true"/>
-
-        <RadioButton
-            android:id="@+id/radio_button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 2"
-            android:freezesText="true"/>
-
-        <RadioButton
-            android:id="@+id/radio_button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 3"
-            android:freezesText="true"/>
-
-        <RadioButton
-            android:id="@+id/radio_button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 4"
-            android:freezesText="true"/>
-
-    </RadioGroup>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/answer_result"
-        android:layout_below="@id/radio_group"
+        android:layout_gravity="bottom"
         android:visibility="gone"
-        android:gravity="center"
-        android:textSize="12sp"
+        android:gravity="bottom"
+        android:orientation="vertical"
         />
 
-    <Button
-        android:id="@+id/button_confirm_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/answer_result"
-        android:layout_marginTop="16dp"
-        android:text="Confirm"
-        android:freezesText="true"/>
-
-</RelativeLayout>
- 
+</LinearLayout>

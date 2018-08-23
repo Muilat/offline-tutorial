@@ -2,6 +2,7 @@ package com.muilat.android.offlinetutorial.data;
 
 
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,8 @@ public class Categories {
     private int mID;
     private String mTitle;
     private String mDescription;
-//    private String mImageUrl;
+//    private byte[] mIcon;
+    private String mIcon;
 
 //
 
@@ -24,6 +26,9 @@ public class Categories {
         mID = OfflineTutorialDbHelper.getColumnInt(data, OfflineTutorialContract.CategoryEntry._ID);
         mTitle = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_TITLE);
         mDescription = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_DESCRIPTION);
+        mIcon = OfflineTutorialDbHelper.getColumnString(data, OfflineTutorialContract.CategoryEntry.COLUMN_ICON);
+//        mIcon = OfflineTutorialDbHelper.getColumnBlob(data, OfflineTutorialContract.CategoryEntry.COLUMN_ICON);
+
     }
 
     public int getId() {
@@ -38,16 +43,13 @@ public class Categories {
         return mDescription;
     }
 
-    public static ArrayList<Categories> dummyCategories(){
-        ArrayList<Categories> categories = new ArrayList<>();
-        categories.add(new Categories(1,"Basic Grammar", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-        categories.add(new Categories(2,"Sentence", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-        categories.add(new Categories(3,"Part of Speach", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-        categories.add(new Categories(4,"Prepositio", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-        categories.add(new Categories(5,"Article", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-        categories.add(new Categories(6,"Tense", "Lorem ipsum is simply dummy text of the printing and typesetting industry"));
-
-        return categories;
+//    public byte[] getIcon() {
+//        return mIcon;
+//    }
+    public String getIcon() {
+        return mIcon;
     }
+
+
 }
 

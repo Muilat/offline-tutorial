@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -59,7 +60,7 @@ public class CategoryFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_category, container, false);
 
         RecyclerView recycler =  view.findViewById(R.id.category_recyclerView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recycler.setLayoutManager(layoutManager);
 
         mCategoryAdapter = new CategoryAdapter();

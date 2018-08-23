@@ -14,11 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
 import com.muilat.android.offlinetutorial.data.SubCategories;
-import com.muilat.android.offlinetutorial.util.ColorUtil;
+import com.muilat.android.offlinetutorial.util.Utils;
 
 public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter.ViewHolder> {
 
@@ -72,9 +73,9 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 //        }
 //        holder.name.setBackgroundColor(subCategory.getColorInt());
         holder.title.setText(subCategory.getTitle());
-        d.setColorFilter(ColorUtil.generateColor(), PorterDuff.Mode.DARKEN);
+        d.setColorFilter(Utils.generateColor(), PorterDuff.Mode.DARKEN);
 
-        holder.icon.setBackground(d);
+        holder.iconLayout.setBackground(d);
 //        holder.icon.setText(subCategory.getTitle().substring(0,1));
         holder.subCategory_cardView.setTag(subCategory);
 
@@ -121,6 +122,7 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
 
         public TextView title;
         public ImageView icon;
+        public LinearLayout iconLayout;
         CardView subCategory_cardView;
 
 
@@ -128,6 +130,7 @@ public class SubCategoryAdapter  extends RecyclerView.Adapter<SubCategoryAdapter
             super(itemView);
             title = itemView.findViewById(R.id.sub_category_title);
             icon = itemView.findViewById(R.id.sub_category_icon);
+            iconLayout = itemView.findViewById(R.id.sub_category_icon_layout);
             subCategory_cardView = itemView.findViewById(R.id.sub_cat_card);
 
         }

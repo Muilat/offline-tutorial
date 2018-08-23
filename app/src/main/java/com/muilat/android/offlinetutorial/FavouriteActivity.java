@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -24,9 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.muilat.android.offlinetutorial.adapter.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
+import com.muilat.android.offlinetutorial.util.NetworkUtils;
+import com.muilat.android.offlinetutorial.util.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -38,12 +45,14 @@ public class FavouriteActivity extends AppCompatActivity  implements
     LessonAdapter mFavouriteAdapter;
 
     ArrayList<Lessons> mFavouriteArrayList = new ArrayList<>();
-    RecyclerView recycler;
+    static RecyclerView recycler;
     static ImageView delete_all, closeDialog;
     static LinearLayout emptyView;
 
+
     Button confrimDelete;
     Dialog deleteAllDialog;
+
 
 
     @Override
@@ -55,6 +64,15 @@ public class FavouriteActivity extends AppCompatActivity  implements
         TextView toolbar_title = findViewById(R.id.toolbar_title);
         toolbar_title.setText(getString(R.string.favourites));
         setSupportActionBar(toolbar);
+
+
+        //adView
+        LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
+        Utils.loadAdView(this, adViewLinearLayout);
+
+
+
+
 
         delete_all = findViewById(R.id.delete_all);
         emptyView = findViewById(R.id.emptyView);
@@ -193,9 +211,12 @@ public class FavouriteActivity extends AppCompatActivity  implements
         mFavouriteAdapter.swapCursor(null);
     }
 
+
+
     public static void favouriteEmpty() {
         emptyView.setVisibility(View.VISIBLE);
         delete_all.setVisibility(View.GONE);
+        recycler.setVisibility(View.GONE);
     }
 
     public void onArrowBackClick(View view){

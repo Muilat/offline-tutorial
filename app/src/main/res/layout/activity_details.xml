@@ -140,13 +140,27 @@
             android:layout_height="match_parent"
             android:text="Previous"
             android:id="@+id/previous_button"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/round_primary_edge"
+            android:textColor="@color/colorWhite"
+
+            />
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="Next"
             android:id="@+id/next_button"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:background="@drawable/round_primary_edge"
+            android:textColor="@color/colorWhite"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/adViewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        android:orientation="vertical"
+        />
 </LinearLayout>

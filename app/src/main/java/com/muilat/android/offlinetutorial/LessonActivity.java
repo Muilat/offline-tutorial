@@ -3,7 +3,9 @@ package com.muilat.android.offlinetutorial;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -15,12 +17,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.muilat.android.offlinetutorial.adapter.LessonAdapter;
 import com.muilat.android.offlinetutorial.data.Lessons;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.SubCategories;
+import com.muilat.android.offlinetutorial.pref.OfflineTutorialPreference;
+import com.muilat.android.offlinetutorial.util.NetworkUtils;
+import com.muilat.android.offlinetutorial.util.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -34,6 +46,10 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
     SubCategories sub_category;
     ArrayList<Lessons> mLessons = new ArrayList<>();
     LessonAdapter mLessonAdapter;
+
+    LinearLayout adviewLinearLayout;
+    public String bannerId;
+    private InterstitialAd interstitialAd;
 
 
     @Override
@@ -67,6 +83,61 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
         recycler.setHasFixedSize(true);
 
         getSupportLoaderManager().initLoader(LESSON_LOADER_ID, null, this);
+
+
+        //adView
+        LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
+        Utils.loadAdView(this, adViewLinearLayout);
+
+        //interstitialAd
+        interstitialAd = new InterstitialAd(LessonActivity.this);
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Log.e(TAG, "ad closed");
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                Log.e(TAG, "ad failed");
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                Log.e(TAG, "ad left application");
+
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.e(TAG, "ad opened");
+
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.e(TAG, "ad loaded");
+
+            }
+        });
+
+        //interstitialAd
+        Handler handlerInterstitialAd = new Handler();
+        handlerInterstitialAd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                interstitialAd.setAdUnitId(OfflineTutorialPreference.getInterstitialId(LessonActivity.this));
+
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        },3000);
 
 
 
@@ -147,6 +218,9 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
         mLessonAdapter.swapCursor(null);
     }
 
+
+
+
     public void onArrowBackClick(View view){
         finish();
     }
@@ -157,10 +231,17 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     public void onSearchClick(View view){
+        showInterstitialAd();
         Intent searchIntent = new Intent(this, SearchActivity.class);
         searchIntent.putParcelableArrayListExtra(SearchActivity.EXTRA_SEARCHES,mLessons);;
         startActivity(searchIntent);
 
+    }
+
+    private void showInterstitialAd(){
+        if(interstitialAd != null && interstitialAd.isLoaded()){
+            interstitialAd.show();
+        }
     }
 
 
