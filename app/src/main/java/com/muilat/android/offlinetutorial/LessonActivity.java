@@ -137,7 +137,7 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
 
                 interstitialAd.loadAd(new AdRequest.Builder().build());
             }
-        },3000);
+        },1000);
 
 
 
@@ -233,7 +233,7 @@ public class LessonActivity extends AppCompatActivity implements LoaderManager.L
     public void onSearchClick(View view){
         showInterstitialAd();
         Intent searchIntent = new Intent(this, SearchActivity.class);
-        searchIntent.putParcelableArrayListExtra(SearchActivity.EXTRA_SEARCHES,mLessons);;
+        searchIntent.putExtra(SearchActivity.EXTRA_SUB_CATEGORY_ID,sub_category.getId());;
         startActivity(searchIntent);
 
     }

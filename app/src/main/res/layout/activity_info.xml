@@ -14,22 +14,16 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/colorBackground"
-        android:padding="@dimen/activity_padding"
+        android:padding="@dimen/padding_8dp"
         >
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <TextView
 
+            <WebView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/info_text"
-                android:textSize="14sp">
+                android:id="@+id/webView">
 
-
-            </TextView>
-        </ScrollView>
+            </WebView>
 
         <ProgressBar
             android:id="@+id/progress_bar"

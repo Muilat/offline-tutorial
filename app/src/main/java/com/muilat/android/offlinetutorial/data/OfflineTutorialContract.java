@@ -28,7 +28,8 @@ public class OfflineTutorialContract  {
     public static final String PATH_LESSONS= "lessons";
 
     public final static String PATH_QUIZ = "quiz";
-    public final static String PATH_FAVOURITES = "favourites";
+        public final static String PATH_QUIZ_SET = "quiz_set";
+        public final static String PATH_FAVOURITES = "favourites";
     public final static String PATH_NOTIFICATIONS = "notifications";
 
 
@@ -115,6 +116,7 @@ public class OfflineTutorialContract  {
         public static final String COLUMN_ANSWER = "answer";
         public static final String COLUMN_MODIFIED_AT = "modified_at";
         public static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_QUIZ_SET_ID = "quiz_set_id";
         public static final String COLUMN_OPTION1 = "option1";
         public static final String COLUMN_OPTION2 = "option2";
         public static final String COLUMN_OPTION3 = "option3";
@@ -122,12 +124,31 @@ public class OfflineTutorialContract  {
 
         final static String CREATE_QUIZ_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
                 _ID+ " INTEGER  NOT NULL, " +
+                COLUMN_QUIZ_SET_ID+ " INTEGER  NOT NULL, " +
                 COLUMN_QUESTION + " TEXT NOT NULL,"+
                 COLUMN_ANSWER + " TEXT NOT NULL,"+
                 COLUMN_OPTION1 + " TEXT NOT NULL, "+
                 COLUMN_OPTION2 + " TEXT NOT NULL, "+
                 COLUMN_OPTION3 + " TEXT NOT NULL, "+
                 COLUMN_OPTION4 + " TEXT NOT NULL, "+
+                COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
+                COLUMN_MODIFIED_AT + " INT NOT NULL);";
+    }
+
+    //quiz_set table
+    public static final class QuizSetEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_QUIZ_SET).build();
+
+        public static final String TABLE_NAME = "quiz_set";
+
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_MODIFIED_AT = "modified_at";
+        public static final String COLUMN_STATUS = "status";
+
+        final static String CREATE_QUIZ_SET_TABLE = "CREATE TABLE "  + TABLE_NAME + " (" +
+                _ID+ " INTEGER  NOT NULL, " +
+                COLUMN_NAME + " TEXT NOT NULL,"+
                 COLUMN_STATUS + " INTEGER NULL DEFAULT 1, "+
                 COLUMN_MODIFIED_AT + " INT NOT NULL);";
     }

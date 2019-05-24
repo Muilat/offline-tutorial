@@ -1,6 +1,5 @@
 package com.muilat.android.offlinetutorial;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.NavUtils;
@@ -16,9 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -54,7 +51,7 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.quiz_look);
+        setContentView(R.layout.activity_result);
 
 //        AdView mAdView = (AdView) findViewById(R.id.adView);
 //        AdRequest adRequest = new AdRequest.Builder()
@@ -66,6 +63,7 @@ public class ResultActivity extends AppCompatActivity {
         RatingBar bar=findViewById(R.id.ratingBar1);
         bar.setNumStars(5);
         bar.setStepSize(0.5f);
+
 
         //get text view
         TextView tvCorrect =(TextView)findViewById(R.id.correct);
@@ -81,8 +79,6 @@ public class ResultActivity extends AppCompatActivity {
         myAnsList=b.getStringArrayList("myAnsList");
         questionsList=b.getParcelableArrayList("initial_quiz");
 
-        //display score
-        bar.setRating(score);
 
         tvCorrect.setText(score+"");
         tvWrong.setText(totalQs-score+"");
@@ -92,7 +88,7 @@ public class ResultActivity extends AppCompatActivity {
         if (percentage>=80 && percentage<=100){
             t.setText("Score is Excellent !");
         }else if(percentage>=70 && percentage<=79){
-            t.setText("Score is Best");
+            t.setText("Score is Very Good!");
         }else if(percentage>=60 && percentage<=69){
             t.setText("Score is Good");
         }else if(percentage>=50 && percentage<=59){
@@ -102,6 +98,13 @@ public class ResultActivity extends AppCompatActivity {
         }else{
             t.setText("Score is Poor! You need to practice more!");
         }
+
+        //display score
+        if(score == 0)
+            bar.setRating(0);
+        else
+            bar.setRating((score*5)/totalQs);
+
 
 
         Button btnShare=(Button)findViewById(R.id.btnShare);
@@ -113,7 +116,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(ResultActivity.this)
                         .setText(textToShare)
-                        .setChooserTitle("Share Developer with")
+                        .setChooserTitle("Share Score with")
                         .setSubject(getString(R.string.app_name))
                         .setType("text/plain")
                         .createChooserIntent();
@@ -138,7 +141,7 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showInterstitialAd();
-                Intent quizIntent=new Intent(ResultActivity.this,QuizActivity.class);
+                Intent quizIntent=new Intent(ResultActivity.this,QuizSetActivity.class);
 
                 startActivity(quizIntent);
 
@@ -214,7 +217,7 @@ public class ResultActivity extends AppCompatActivity {
 
                 interstitialAd.loadAd(new AdRequest.Builder().build());
             }
-        },3000);
+        },1000);
 
 
     }

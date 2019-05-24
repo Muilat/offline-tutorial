@@ -110,6 +110,7 @@ public class NetworkUtils {
         JSONArray jsonCategoryArray = offlineTutorialJson.getJSONArray("categories");
         JSONArray jsonSubCategoryArray = offlineTutorialJson.getJSONArray("sub_categories");
         JSONArray jsonLessonArray = offlineTutorialJson.getJSONArray("lessons");
+        JSONArray jsonQuizSetArray = offlineTutorialJson.getJSONArray("quiz_set");
         JSONArray jsonQuizArray = offlineTutorialJson.getJSONArray("quiz");
         JSONArray jsonNotificationArray = offlineTutorialJson.getJSONArray("notifications");
 
@@ -227,6 +228,7 @@ public class NetworkUtils {
             String option2 = quizObject.getString("option2");
             String option3 = quizObject.getString("option3");
             String option4 = quizObject.getString("option4");
+            int quiz_set_id = quizObject.getInt("quiz_set_id");
             status = quizObject.getInt(STATUS);
 
             ContentValues quizValue = new ContentValues();
@@ -239,13 +241,14 @@ public class NetworkUtils {
             quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_OPTION4, option4);
             quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_STATUS, status);
             quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_MODIFIED_AT, modified_at);
+            quizValue.put(OfflineTutorialContract.QuizEntry.COLUMN_QUIZ_SET_ID, quiz_set_id);
             quizValue.put(OfflineTutorialContract.QuizEntry._ID, id);
 
             quizValues[i] = quizValue;
 
         }
 
-        //handle quiz data
+        //handle notificationdata
         ContentValues[] notificationValues = new ContentValues[jsonNotificationArray.length()];
 
         for (int i = 0; i < jsonNotificationArray.length(); i++) {
@@ -272,11 +275,40 @@ public class NetworkUtils {
 
         }
 
+        //handle quizset data
+        ContentValues[] quizSetValues = new ContentValues[jsonQuizSetArray.length()];
+
+        for (int i = 0; i < jsonQuizSetArray.length(); i++) {
+
+            JSONObject quizSetObject = jsonQuizSetArray.getJSONObject(i);
+
+            modified_at = quizSetObject.getInt(MODIFIED_AT);
+            id = quizSetObject.getInt(ID);
+            String name = quizSetObject.getString("name");
+            status = quizSetObject.getInt(STATUS);
+
+
+            ContentValues quizSetValue = new ContentValues();
+
+            quizSetValue.put(OfflineTutorialContract.QuizSetEntry.COLUMN_NAME, name);
+            quizSetValue.put(OfflineTutorialContract.QuizSetEntry.COLUMN_STATUS, status);
+            quizSetValue.put(OfflineTutorialContract.QuizSetEntry.COLUMN_MODIFIED_AT, modified_at);
+            quizSetValue.put(OfflineTutorialContract.QuizSetEntry._ID, id);
+
+            quizSetValues[i] = quizSetValue;
+
+        }
+
         arrayListContentValues.add(categoryValues);
         arrayListContentValues.add(subCategoryValues);
         arrayListContentValues.add(lessonValues);
         arrayListContentValues.add(quizValues);
         arrayListContentValues.add(notificationValues);
+        arrayListContentValues.add(quizSetValues);
+
+
+
+
 
         //it needs not be an arra, yes, but the api sends array ):
         for(int i = 0; i<jsonAdmobSettingsArray.length(); i++){

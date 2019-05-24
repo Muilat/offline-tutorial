@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.muilat.android.offlinetutorial.R;
@@ -54,6 +56,8 @@ public class LessonViewAdapter extends RecyclerView.Adapter<LessonViewAdapter.Vi
         text_size_pref = sharedPreferences.getString(mContext.getString(R.string.pref_text_size_key),
                 mContext.getResources().getString(R.string.pref_text_size_small_value));
 
+
+
         return viewHolder;
     }
 
@@ -72,7 +76,9 @@ public class LessonViewAdapter extends RecyclerView.Adapter<LessonViewAdapter.Vi
 //        holder.title.setBackgroundColor(ColorUtil.generateColor());
 
 //        holder.icon.setText(position+"");
-        holder.description.setText(lesson.getDescription());
+//        holder.description.setText(lesson.getDescription());
+        holder.webView.loadData(lesson.getDescription(),"text/html; charset=utf-8",null);
+
         if (text_size_pref.equals(mContext.getResources().getString(R.string.pref_text_size_large_value))) {
             setTextSize((int) mContext.getResources().getDimension(R.dimen.text_large));
 
@@ -132,11 +138,18 @@ public class LessonViewAdapter extends RecyclerView.Adapter<LessonViewAdapter.Vi
         public TextView title, description;
         CardView word_cardView;
 
+        WebView webView;
+        WebSettings settings;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.lesson_title);
-            description = itemView.findViewById(R.id.lesson_description);
+//            description = itemView.findViewById(R.id.lesson_description);
+            webView = itemView.findViewById(R.id.webView);
+            settings = webView.getSettings();
+            settings.setDefaultTextEncodingName("utf-8");
+
 
 
         }
@@ -145,6 +158,7 @@ public class LessonViewAdapter extends RecyclerView.Adapter<LessonViewAdapter.Vi
     public void setTextSize(int size) {
 
         viewHolder.title.setTextSize(size);
-        viewHolder.description.setTextSize(size);
+//        viewHolder.description.setTextSize(size);
+        viewHolder.settings.setDefaultFontSize(size);
     }
 }

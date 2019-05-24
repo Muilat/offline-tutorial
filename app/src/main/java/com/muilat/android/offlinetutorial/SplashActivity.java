@@ -57,7 +57,7 @@ public class SplashActivity extends Activity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://www.linkedin/in/muilat")));}
+                        Uri.parse("https://www.linkedin.com/in/muilat")));}
         }, 24, link.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(content);
         textView.setMovementMethod(LinkMovementMethod.getInstance());

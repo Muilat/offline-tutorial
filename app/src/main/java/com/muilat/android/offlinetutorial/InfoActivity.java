@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,13 +30,17 @@ import java.net.URL;
 public class InfoActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<JSONObject> {
 
     private static final String TAG = InfoActivity.class.getSimpleName();
-    TextView emptyTextView, infoTextView;
+    TextView emptyTextView;
+//    TextView infoTextView;
     LinearLayout emptyLayout;
     ProgressBar progressBar;
+    WebView webView;
+    WebSettings settings;
 
     public static final int EXTRA_INFO_TYPE_ABOUT = 1;
     public static final int EXTRA_INFO_TYPE_PRIVACY_POLICY = 2;
-    public static final int EXTRA_INFO_TYPE_PUBLISHER_ID = 3;
+    public static final int EXTRA_INFO_DEVLOPER = 3;
+
 
     public static final String EXTRA_INFO_TYPE = "extra-info-type";
 
@@ -48,8 +54,13 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
 
         emptyLayout = findViewById(R.id.emptyLayout);
         emptyTextView = findViewById(R.id.emptyText);
-        infoTextView = findViewById(R.id.info_text);
+//        infoTextView = findViewById(R.id.info_text);
         progressBar = findViewById(R.id.progress_bar);
+        webView = findViewById(R.id.webView);
+        settings = webView.getSettings();
+        settings.setDefaultTextEncodingName("utf-8");
+
+
 
         //adView
         LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
@@ -69,11 +80,14 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
             }{
                 progressBar.setVisibility(View.GONE);
                 if(Build.VERSION.SDK_INT<Build.VERSION_CODES.N){
-                    infoTextView.setText(Html.fromHtml(info));
+//                    infoTextView.setText(Html.fromHtml(info));
+                    webView.loadData(info,"text/html; charset=utf-8",null);
+
 
                 }
                 else {
-                    infoTextView.setText(Html.fromHtml(info,Html.FROM_HTML_MODE_COMPACT));
+//                    infoTextView.setText(Html.fromHtml(info,Html.FROM_HTML_MODE_COMPACT));
+                    webView.loadData(info,"text/html; charset=utf-8",null);
                 }
             }
         }
@@ -163,21 +177,25 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             if(info.equals("")){
-                infoTextView.setVisibility(View.GONE);
+//                infoTextView.setVisibility(View.GONE);
+                webView.setVisibility(View.GONE);
                 emptyLayout.setVisibility(View.VISIBLE);
             }
             else{
                 if(Build.VERSION.SDK_INT<Build.VERSION_CODES.N){
-                    infoTextView.setText(Html.fromHtml(info));
+//                    infoTextView.setText(Html.fromHtml(info));
+                    webView.loadData(info,"text/html; charset=utf-8",null);
 
                 }
                 else {
-                    infoTextView.setText(Html.fromHtml(info,Html.FROM_HTML_MODE_COMPACT));
+//                    infoTextView.setText(Html.fromHtml(info,Html.FROM_HTML_MODE_COMPACT));
+                    webView.loadData(info,"text/html; charset=utf-8",null);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            infoTextView.setVisibility(View.GONE);
+//            infoTextView.setVisibility(View.GONE);
+            webView.setVisibility(View.GONE);
             emptyLayout.setVisibility(View.VISIBLE);
         }
 
@@ -189,6 +207,7 @@ public class InfoActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<JSONObject>loader) {
         progressBar.setVisibility(View.VISIBLE);
     }
+
 
 
 

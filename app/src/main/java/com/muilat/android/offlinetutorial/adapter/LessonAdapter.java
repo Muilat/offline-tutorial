@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,10 +97,22 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.ViewHolder
         holder.icon.setBackground(d);
         holder.title.setText(lesson.getTitle());
         holder.icon.setText(position+1+"");
-        if(lesson.getDescription().length() >50){
-            holder.description.setText(lesson.getDescription().substring(0,47)+"...");
+
+        String des = lesson.getDescription();
+        if(des.length() > 60){
+            des = des.substring(0,57)+"...";
+        }
+
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.N){
+
+            holder.description.setText(Html.fromHtml(des));
+
 
         }
+        else {
+            holder.description.setText(Html.fromHtml(des,Html.FROM_HTML_MODE_COMPACT));
+        }
+
         holder.word_cardView.setTag(lesson.getID());
 
 

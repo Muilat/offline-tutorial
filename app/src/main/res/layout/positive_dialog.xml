@@ -76,10 +76,11 @@
                     android:elevation="5dp"
                     android:orientation="vertical">
                     <Button
-                        android:id="@id/close_dialog"
+                        android:id="@+id/close"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="No, Later"
+                        android:onClick="onLaterClick"
                         android:textColor="#ffffff"
                         android:layout_margin="5dp"
                         android:background="@drawable/round_red_edge"

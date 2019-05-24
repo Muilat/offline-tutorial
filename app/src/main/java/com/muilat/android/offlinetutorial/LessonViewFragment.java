@@ -4,20 +4,25 @@ import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,24 +41,22 @@ public class LessonViewFragment extends AppCompatActivity {
     private static final String TAG = LessonViewFragment.class.getName();
     public static final String ARG_LESSON_POSITION = "lesson_positon";
     public static final String ARG_LESSONS = "lessons";
-    public static final String ARG_SINGLE_LESSON = "lesson";
 
     private static LessonViewAdapter mLessonViewAdapter;
 
-    RecyclerView recycler;
     ImageView favouriteIcon, copyIcon, searchIcon, shareIcon;
     TextView total,number;
-    Button nextButton, previousButton;
+    
+    WebView webView;
+    WebSettings settings;
 
 
     public ArrayList<Lessons> mLesson = new ArrayList<>();
+    Lessons lesson;
     static int mPosition = 0;
     private InterstitialAd interstitialAd;
+    private String text_size_pref;
 
-
-    public LessonViewFragment(){
-        //the empty constructor
-    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +68,26 @@ public class LessonViewFragment extends AppCompatActivity {
         favouriteIcon = findViewById(R.id.favourite);
         total = findViewById(R.id.lesson_total);
         number = findViewById(R.id.lesson_number);
+        TextView divider = findViewById(R.id.divider);
+        RelativeLayout container = findViewById(R.id.container);
+
+        //TODO: to be removed on request
+        copyIcon.setVisibility(View.GONE);
+        shareIcon.setVisibility(View.GONE);
+        total.setVisibility(View.GONE);
+        number.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+
 
         TextView toolbar_title = findViewById(R.id.toolbar_title);
-        toolbar_title.setText("Lesson Detail");
+
+        webView = findViewById(R.id.webView);
+        settings = webView.getSettings();
+        settings.setDefaultTextEncodingName("utf-8");
+
+        int width = container.getMeasuredWidth();
+
+
 
         if(savedInstanceState != null){
             mLesson = savedInstanceState.getParcelableArrayList(ARG_LESSONS);
@@ -76,81 +96,67 @@ public class LessonViewFragment extends AppCompatActivity {
         else if(getIntent() != null) {
             mLesson = getIntent().getParcelableArrayListExtra(ARG_LESSONS);
             mPosition = getIntent().getIntExtra(ARG_LESSON_POSITION, mPosition);
+            lesson = mLesson.get(mPosition);
+
+
         }
+        
+        lesson = mLesson.get(mPosition);
 
-        mLessonViewAdapter = new LessonViewAdapter();
+        Double d = new Double(width * 0.9);
+        Log.e(TAG, "width: "+width);
+        int i = d.intValue();
+        Log.e(TAG, "i: "+i);
 
-        recycler =  findViewById(R.id.lessons_recyclerView);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-        recycler.setLayoutManager(layoutManager);
+        String title = lesson.getTitle();
 
-        recycler.setItemAnimator(new DefaultItemAnimator()); //Animator for recycler view
-        recycler.setAdapter(mLessonViewAdapter);
-        recycler.setHasFixedSize(true);
 
-        mLessonViewAdapter.swapCursor(mLesson);
+        if(title.length() >= i){
+            i = i - 3;
+            try {
+                title = title.substring(0,i)+"...";
 
-        recycler.scrollToPosition(mPosition);
+            }catch(Exception e){
+                toolbar_title.setText(title);
+                Log.e(TAG, "exception: "+e.getMessage());
+
+            }
+
+        }
+        toolbar_title.setText(title);
+
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        text_size_pref = sharedPreferences.getString(getString(R.string.pref_text_size_key),
+                getResources().getString(R.string.pref_text_size_small_value));
+
+        if (text_size_pref.equals(getResources().getString(R.string.pref_text_size_large_value))) {
+            settings.setDefaultFontSize((int) getResources().getDimension(R.dimen.text_large));
+
+        } else if (text_size_pref.equals(getResources().getString(R.string.pref_text_size_medium_value))) {
+            settings.setDefaultFontSize((int) getResources().getDimension(R.dimen.text_medium));
+
+        } else {
+            settings.setDefaultFontSize((int) getResources().getDimension(R.dimen.text_small));
+
+        }
+//        webView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+//        webView.getSettings().setUseWideViewPort(true);
+        webView.loadData(lesson.getDescription(),"text/html; charset=utf-8",null);
+
+
+
         checkFavourite(mPosition);
         number.setText(mPosition+1+"");
         total.setText(mLesson.size()+"");
 
-
-        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE){
-                    mPosition = getCurrentPosition();
-
-                    //while showing another lesson, check if its favourite
-                    checkFavourite(mPosition);
-                    number.setText(mPosition+1+"");
-
-                }
-            }
-        });
-
-
-        nextButton = findViewById(R.id.next_button);
-        previousButton = findViewById(R.id.previous_button);
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RecyclerView.Adapter adapter = recycler.getAdapter();
-                if(adapter == null)
-                    return;
-                mPosition = getCurrentPosition();
-                int count = adapter.getItemCount();
-                if(mPosition<(count - 1))
-                    mPosition++;
-                setCurrentPosition(mPosition, true);
-
-            }
-        });
-
-        previousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPosition = getCurrentPosition();
-                if (mPosition > 0){
-                    mPosition--;
-                    setCurrentPosition(mPosition, true);
-                }
-            }
-        });
-
-
-        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
-        pagerSnapHelper.attachToRecyclerView(recycler);
 
 
         favouriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: go get the lesson
-                Lessons lesson = LessonViewFragment.getLessonInViewId();
+                Lessons lesson = mLesson.get(mPosition);
 
                 String stringId = Long.toString(lesson.getID());
                 Uri uri = OfflineTutorialContract.LessonEntry.CONTENT_URI;
@@ -180,7 +186,7 @@ public class LessonViewFragment extends AppCompatActivity {
         copyIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Lessons lesson = LessonViewFragment.getLessonInViewId();
+                Lessons lesson = mLesson.get(mPosition);
 
                 String textToCopy = lesson.getTitle()+"\n"+lesson.getDescription();
                 if(Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB){
@@ -200,13 +206,13 @@ public class LessonViewFragment extends AppCompatActivity {
         shareIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Lessons lesson = LessonViewFragment.getLessonInViewId();
+                Lessons lesson = mLesson.get(mPosition);
                 String textToShare = lesson.getTitle()+"\n"+lesson.getDescription();
                 textToShare += "\nInstall from http://play.google.com/store/apps/details?id=" + getPackageName();
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(LessonViewFragment.this)
                         .setText(textToShare)
-                        .setChooserTitle("Share Developer with")
+                        .setChooserTitle("Share Lesson with")
                         .setSubject(getString(R.string.app_name))
                         .setType("text/plain")
                         .createChooserIntent();
@@ -265,12 +271,12 @@ public class LessonViewFragment extends AppCompatActivity {
 
                 interstitialAd.loadAd(new AdRequest.Builder().build());
             }
-        },3000);
+        },1000);
 
     }
 
     private void checkFavourite(int position) {
-        Lessons lesson = mLessonViewAdapter.getItem(position);
+        Lessons lesson = mLesson.get(position);
         Log.e(TAG, lesson.mIsFavourite);
         if (lesson.isFavourite()){
             favouriteIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
@@ -280,25 +286,11 @@ public class LessonViewFragment extends AppCompatActivity {
     }
 
 
-    public int getCurrentPosition(){
-        return ((LinearLayoutManager)recycler.getLayoutManager())
-                .findFirstVisibleItemPosition();
-    }
-
-    public  void setCurrentPosition(int position, boolean smooth){
-        if(smooth)
-            recycler.smoothScrollToPosition(position);
-        else
-            recycler.scrollToPosition(position);
-
-
-    }
-
-    public static Lessons getLessonInViewId(){
-        Lessons lesson = mLessonViewAdapter.getItem(mPosition);
-
-        return lesson;
-    }
+//    public static Lessons getLessonInViewId(){
+//        Lessons lesson = mLesson.get(position);
+//
+//        return lesson;
+//    }
 
     public void onArrowBackClick(View view){
 

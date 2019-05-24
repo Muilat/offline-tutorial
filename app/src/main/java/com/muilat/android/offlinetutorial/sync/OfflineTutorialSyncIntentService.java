@@ -52,6 +52,7 @@ public class OfflineTutorialSyncIntentService extends IntentService {
             ContentValues[] lessonsValues = offlineTutorialValues.get(2);
             ContentValues[] quizValues = offlineTutorialValues.get(3);
             ContentValues[] notificationValues = offlineTutorialValues.get(4);
+            ContentValues[] quizSetValues = offlineTutorialValues.get(5);
             /*
              * In cases where our JSON contained an error code, getOfflineTutorialContentValuesFromJson
              * would have returned null. We need to check for those cases here to prevent any
@@ -83,6 +84,16 @@ public class OfflineTutorialSyncIntentService extends IntentService {
                         OfflineTutorialContract.LessonEntry.CONTENT_URI,
                         lessonsValues);
             }
+
+            if (quizSetValues != null && quizSetValues.length != 0) {
+
+                /* Insert our new quiz_set data into OfflineTutorial's ContentProvider */
+                offlineTutorialContentResolver.bulkInsert(
+                        OfflineTutorialContract.QuizSetEntry.CONTENT_URI,
+                        quizSetValues);
+            }
+
+
 
 
             if (quizValues != null && quizValues.length != 0) {

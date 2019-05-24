@@ -35,7 +35,7 @@
     <string name="rate_app">Rate App</string>
     <string name="share">Share</string>
     <string name="others">Others</string>
-    <string name="about">About</string>
+    <string name="about">About App</string>
     <string name="no_data_found">No data Found!</string>
     <string name="are_you_sure_you_want_to_delete_all_favourite_lessons">Are you sure you want to delete all favourite lessons?</string>
     <string name="action_confirm">Action confirmation!</string>
@@ -46,4 +46,6 @@
     <string name="app_slogan">Learn with fun</string>
     <string name="quiz_result">Quiz Result</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="check_your_internet_connection_and_retry">Check your internet connection and retry</string>
+    <string name="needs_to_fetch_data">Offline Tutorial App needs to fetch data from the net on first instalation</string>
 </resources>

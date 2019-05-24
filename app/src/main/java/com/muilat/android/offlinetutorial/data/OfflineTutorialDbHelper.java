@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.CategoryEntry.CREATE_CATEGORIES_TABLE;
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.NotificationEntry.CREATE_NOTIFICATION_TABLE;
+import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.QuizSetEntry.CREATE_QUIZ_SET_TABLE;
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.SubCategoryEntry.CREATE_SUB_CATEGORIES_TABLE;
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.LessonEntry.CREATE_LESSONS_TABLE;
 import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.QuizEntry.CREATE_QUIZ_TABLE;
@@ -36,6 +37,7 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CATEGORIES_TABLE);/*create categories table*/
         db.execSQL(CREATE_SUB_CATEGORIES_TABLE);/*create subcategories table*/
         db.execSQL(CREATE_LESSONS_TABLE);/*create lessons table*/
+        db.execSQL(CREATE_QUIZ_SET_TABLE);/*create quiz_set table*/
         db.execSQL(CREATE_QUIZ_TABLE);/*create quiz table*/
         db.execSQL(CREATE_NOTIFICATION_TABLE);/*create notiications table*/
 
@@ -58,6 +60,7 @@ public class OfflineTutorialDbHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.CategoryEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.SubCategoryEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.LessonEntry.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.QuizSetEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.QuizEntry.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + OfflineTutorialContract.NotificationEntry.TABLE_NAME);
 

@@ -8,6 +8,7 @@
     android:paddingBottom="0dp"
     >
 
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,12 +24,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite">
-        <TextView
+        <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/lesson_description"
-            android:text="match_parent match_parent match_parent match_parent match_parent "
-            android:padding="@dimen/padding_8dp"/>
+            android:padding="@dimen/padding_8dp"
+            android:id="@+id/webView"
+            >
+
+        </WebView>
 
     </ScrollView>
 

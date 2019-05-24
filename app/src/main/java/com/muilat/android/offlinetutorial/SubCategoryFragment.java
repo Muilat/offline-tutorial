@@ -3,35 +3,29 @@ package com.muilat.android.offlinetutorial;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.muilat.android.offlinetutorial.adapter.SubCategoryAdapter;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.SubCategories;
-import com.muilat.android.offlinetutorial.util.NetworkUtils;
+import com.muilat.android.offlinetutorial.pref.OfflineTutorialPreference;
 import com.muilat.android.offlinetutorial.util.Utils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static com.muilat.android.offlinetutorial.data.OfflineTutorialContract.SubCategoryEntry.CONTENT_URI;
 
 
 public class SubCategoryFragment extends AppCompatActivity implements  LoaderManager.LoaderCallbacks<Cursor>  {
@@ -44,20 +38,20 @@ public class SubCategoryFragment extends AppCompatActivity implements  LoaderMan
     public final static String ARG_CATEGORY_ID = "category_id";
 
     static SubCategoryAdapter mSubCategoryAdapter;
-
+    private InterstitialAd interstitialAd;
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fragment_sub_category);
+        setContentView(R.layout.activity_sub_category);
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView title = findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
 
-        //adView
-        LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
-        Utils.loadAdView(this, adViewLinearLayout);
+
+
+
 
 
         RecyclerView recycler =  findViewById(R.id.sub_cat_recyclerView);
@@ -76,6 +70,61 @@ public class SubCategoryFragment extends AppCompatActivity implements  LoaderMan
 
         //Ensure a loader is initialized and active
         getSupportLoaderManager().initLoader(SUB_CATEGORY_LOADER_ID, null, this);
+
+        //adView
+        LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
+        Utils.loadAdView(this, adViewLinearLayout);
+
+        //interstitialAd
+        interstitialAd = new InterstitialAd(SubCategoryFragment.this);
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                Log.e(TAG, "ad closed");
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                Log.e(TAG, "ad failed");
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                Log.e(TAG, "ad left application");
+
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                Log.e(TAG, "ad opened");
+
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                Log.e(TAG, "ad loaded");
+
+            }
+        });
+
+        //interstitialAd
+        Handler handlerInterstitialAd = new Handler();
+        handlerInterstitialAd.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                interstitialAd.setAdUnitId(OfflineTutorialPreference.getInterstitialId(SubCategoryFragment.this));
+
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        },1000);
+
     }
 
     public void onSubCategoryClicked(View view){
@@ -169,11 +218,13 @@ public class SubCategoryFragment extends AppCompatActivity implements  LoaderMan
     }
 
     public void onArrowBackClick(View view){
+        showInterstitialAd();
         finish();
     }
 
     @Override
     public void onBackPressed() {
+        showInterstitialAd();
         finish();
     }
 
@@ -182,6 +233,12 @@ public class SubCategoryFragment extends AppCompatActivity implements  LoaderMan
 //        searchIntent.putParcelableArrayListExtra(SearchActivity.EXTRA_SEARCHES,mLessons);;
         startActivity(searchIntent);
 
+    }
+
+    private void showInterstitialAd(){
+        if(interstitialAd != null && interstitialAd.isLoaded()){
+            interstitialAd.show();
+        }
     }
 
 

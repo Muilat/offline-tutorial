@@ -1,26 +1,26 @@
 package com.muilat.android.offlinetutorial;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.ShareCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -35,47 +35,47 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
+import com.muilat.android.offlinetutorial.adapter.CategoryAdapter;
 import com.muilat.android.offlinetutorial.data.Categories;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialContract;
 import com.muilat.android.offlinetutorial.data.OfflineTutorialDbHelper;
-import com.muilat.android.offlinetutorial.data.SubCategories;
-import com.muilat.android.offlinetutorial.adapter.SubCategoryAdapter;
 import com.muilat.android.offlinetutorial.pref.OfflineTutorialPreference;
 import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncIntentService;
 import com.muilat.android.offlinetutorial.sync.OfflineTutorialSyncUtils;
-import com.muilat.android.offlinetutorial.util.NetworkUtils;
 import com.muilat.android.offlinetutorial.util.Utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor>   {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
     public static FragmentTransaction fragmentTransaction;
     public static FragmentManager fragmentManager;
-
+    public static FloatingActionButton fab;
 
     private int mNotificationsCount = 0;
-    private SQLiteDatabase mDb;
 
+    private SQLiteDatabase mDb;
     private OfflineTutorialDbHelper dbHelper;
 
 
     private long backPressedTime;
 
     InterstitialAd interstitialAd;
+
+    Dialog quizDialog, reloadDialog;
+
+    private static final int CATEGORY_LOADER_ID = 1111;
+    private CategoryAdapter mCategoryAdapter;
+    boolean data_fetched = false;
 
 
 
@@ -89,13 +89,13 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        FloatingActionButton fab = findViewById(R.id.quiz_fab);
+        fab = findViewById(R.id.quiz_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog quizDialog = new Dialog(MainActivity.this);
+                quizDialog = new Dialog(MainActivity.this);
 
-                quizDialog.setContentView(R.layout.quiz_start_dialog);
+                quizDialog.setContentView(R.layout.positive_dialog);
                 ImageView closeDialog = quizDialog.findViewById(R.id.close_dialog);
                 Button confrimStart = quizDialog.findViewById(R.id.confirm);
 //        TextView dialogMessage = quizDialog.findViewById(R.id.dialog_message);
@@ -117,18 +117,19 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(View view) {
                         quizDialog.dismiss();
-                        Intent  quizIntent = new Intent(MainActivity.this, QuizActivity.class);
-                        startActivity(quizIntent);
+                        Intent  quizSetIntent = new Intent(MainActivity.this, QuizSetActivity.class);
+                        startActivity(quizSetIntent);
 
                     }
                 });
 
-//        quizDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        quizDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 quizDialog.show();
 
 
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -138,23 +139,30 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, new CategoryFragment());
-
-        fragmentTransaction.commit();
-
-
 
         dbHelper = new OfflineTutorialDbHelper(this);
         mDb= dbHelper.getReadableDatabase();
 
+
         if(savedInstanceState == null){
-//            OfflineTutorialSyncUtils.initialize(this);
-//            Intent intentToSyncImmediately = new Intent(this, OfflineTutorialSyncIntentService.class);
-//            startService(intentToSyncImmediately);
-//TODO:BE back here
+            //Ensure a loader is initialized and active
+            getSupportLoaderManager().initLoader(CATEGORY_LOADER_ID, null, this);
+
+        }else {
+            if(!savedInstanceState.getBoolean("data_fetched")){
+                getSupportLoaderManager().initLoader(CATEGORY_LOADER_ID, null, this);
+
+            }
         }
+
+        RecyclerView recycler =  findViewById(R.id.category_recyclerView);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 2);
+        recycler.setLayoutManager(layoutManager);
+
+        mCategoryAdapter = new CategoryAdapter();
+        recycler.setAdapter(mCategoryAdapter);
+        recycler.setHasFixedSize(true);
+
 
         //adView
         LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
@@ -215,6 +223,141 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            // Initialize a Cursor, this will hold all the Category data
+//            Cursor mCategoriesData = null;
+            Cursor mCategoriesData;
+
+            // onStartLoading() is called when a loader first starts loading data
+            @Override
+            protected void onStartLoading() {
+                if (mCategoriesData != null) {
+                    data_fetched = true;
+                    // Delivers any previously loaded data immediately
+                    deliverResult(mCategoriesData);
+                } else {
+                    // Force a new load
+                    forceLoad();
+                }
+            }
+
+            // loadInBackground() performs asynchronous loading of data
+            @Override
+            public Cursor loadInBackground() {
+
+                try {
+                    return getContentResolver().query(OfflineTutorialContract.CategoryEntry.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+//                    return Categories.dummyCategories();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage()+" Failed to asynchronously load Categorys.");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            public void deliverResult(Cursor data) {
+                mCategoriesData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCategoryAdapter.swapCursor(data);
+        data_fetched = true;
+
+//        Log.e(TAG, "No of cursor: "+data.getCount());
+//        Log.e(TAG, "No of Categories: "+data.getCount());
+        if(data.getCount() == 0){
+            fab.setVisibility(View.GONE);
+
+            showReloadDialog();
+        }else {
+            fab.setVisibility(View.VISIBLE);
+
+        }
+
+
+    }
+
+
+
+    @Override
+    public void onLoaderReset(Loader<Cursor>loader) {
+        mCategoryAdapter.swapCursor(null);
+    }
+
+    private void showReloadDialog() {
+        reloadDialog = new Dialog(MainActivity.this);
+
+        reloadDialog.setContentView(R.layout.positive_dialog);
+        ImageView closeDialog = reloadDialog.findViewById(R.id.close_dialog);
+        Button confrimStart = reloadDialog.findViewById(R.id.confirm);
+        Button confrimExit = reloadDialog.findViewById(R.id.close);
+        TextView dialogMessage = reloadDialog.findViewById(R.id.dialog_message);
+        TextView dialogTitle = reloadDialog.findViewById(R.id.dialog_title);
+        ImageView dialogIcon = reloadDialog.findViewById(R.id.dialog_icon);
+
+        confrimExit.setVisibility(View.GONE);
+        dialogMessage.setText(R.string.check_your_internet_connection_and_retry);
+        dialogTitle.setText(R.string.needs_to_fetch_data);
+        dialogIcon.setImageResource(R.drawable.ic_info_outline_white_24dp);
+
+
+        closeDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reloadDialog.dismiss();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        reloadDialog.show();
+                    }
+                },1000);
+            }
+        });
+
+        confrimStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reloadDialog.dismiss();
+
+                //call our service o go fecth data again
+                OfflineTutorialSyncUtils.initialize(MainActivity.this);
+                Intent intentToSyncImmediately = new Intent(MainActivity.this, OfflineTutorialSyncIntentService.class);
+                startService(intentToSyncImmediately);
+
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+
+                progressDialog.setTitle("Refetching data from net");
+                progressDialog.setMessage("Please wait...");
+                progressDialog.show();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getSupportLoaderManager().restartLoader(CATEGORY_LOADER_ID, null, MainActivity.this);
+                        progressDialog.dismiss();
+                    }
+                },7000);
+
+            }
+        });
+
+        reloadDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        reloadDialog.show();
+
+    }
 
     public void onCategoryClicked(View view){
 //        int category_id = (int) view.findViewById(R.id.category_card).getTag();
@@ -235,6 +378,12 @@ public class MainActivity extends AppCompatActivity
         startActivity(subCategoryFragment);
     }
 
+
+    public void onLaterClick(View view) {
+        quizDialog.dismiss();
+        Toast.makeText(MainActivity.this, "Check back later when you are bold enough",Toast.LENGTH_SHORT).show();
+
+    }
 
     @Override
     protected void onResume() {
@@ -339,8 +488,9 @@ public class MainActivity extends AppCompatActivity
             if(shareIntent.resolveActivity(getPackageManager()) != null){
                 startActivity(shareIntent);
             }
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_exit) {
+            showInterstitialAd();
+            finish();
         } else if (id == R.id.nav_rate_app) {
 
             try {
@@ -359,6 +509,11 @@ public class MainActivity extends AppCompatActivity
             showInterstitialAd();
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             intent.putExtra(InfoActivity.EXTRA_INFO_TYPE, InfoActivity.EXTRA_INFO_TYPE_PRIVACY_POLICY);
+            startActivity(intent);
+        }
+        else if(id==R.id.nav_developer){
+            showInterstitialAd();
+            Intent intent = new Intent(MainActivity.this, DeveloperActivity.class);
             startActivity(intent);
         }
 
@@ -403,6 +558,8 @@ public class MainActivity extends AppCompatActivity
             interstitialAd.show();
         }
     }
+
+
 
 
 

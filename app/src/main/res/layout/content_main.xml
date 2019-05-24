@@ -9,12 +9,14 @@
     android:orientation="vertical"
     tools:showIn="@layout/app_bar_main">
 
-    <FrameLayout
+
+    <android.support.v7.widget.RecyclerView
+        android:background="@color/colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/container">
+        android:id="@+id/category_recyclerView">
 
-    </FrameLayout>
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/adViewLayout"

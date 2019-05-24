@@ -43,6 +43,7 @@ import java.util.Set;
 
 public class QuizActivity extends AppCompatActivity  {
 
+    public static final String EXTRA_QUIZ_SET_ID = "extra-quiz-set-id";
     private ArrayList<Quiz> questionsList = new ArrayList<>();
     private Quiz currentQuestion;
 
@@ -59,6 +60,7 @@ public class QuizActivity extends AppCompatActivity  {
     ArrayList<Quiz> initialQuiz = new ArrayList<>();
 
     Cursor mCursor;
+    private int quiz_set_id;
 
 
     @Override
@@ -70,12 +72,18 @@ public class QuizActivity extends AppCompatActivity  {
         LinearLayout adViewLinearLayout = findViewById(R.id.adViewLayout);
         Utils.loadAdView(this, adViewLinearLayout);
 
+        if (getIntent() != null) {
+            quiz_set_id = getIntent().getIntExtra(EXTRA_QUIZ_SET_ID, 0);
+        }
+
 
         //Initialize the view
         init();
 
-        //Initialize the database
-        Cursor quizCursor= getContentResolver().query(OfflineTutorialContract.QuizEntry.CONTENT_URI,null,null,null,null);
+        String id = Long.toString(quiz_set_id);
+        Uri uri = OfflineTutorialContract.QuizEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();
+        Cursor quizCursor= getContentResolver().query(uri,null,null,null,null);
 
         mCursor = quizCursor;
         int quiz_number;

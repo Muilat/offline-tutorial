@@ -25,10 +25,10 @@
                 android:id="@+id/nav_rate_app"
                 android:icon="@drawable/ic_star_black_24dp"
                 android:title="@string/rate_app" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+            <!--<item-->
+                <!--android:id="@+id/nav_send"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="Send" />-->
         </menu>
     </item>
 
@@ -43,6 +43,14 @@
                 android:id="@+id/nav_policy"
                 android:icon="@drawable/ic_lock_black_24dp"
                 android:title="@string/privacy_policy" />
+            <item
+                android:id="@+id/nav_developer"
+                android:icon="@drawable/ic_developer"
+                android:title="About Developer" />
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/ic_exit"
+                android:title="Exit App" />
         </menu>
     </item>
 

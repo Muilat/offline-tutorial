@@ -98,6 +98,7 @@ public class FavouriteActivity extends AppCompatActivity  implements
                 deleteAllDialog.setContentView(R.layout.negative_dialog);
                 closeDialog = deleteAllDialog.findViewById(R.id.close_dialog);
                 confrimDelete = deleteAllDialog.findViewById(R.id.confirm);
+                confrimDelete.setText("Confirm Delete");
 
                 closeDialog.setOnClickListener(new View.OnClickListener() {
                     @Override

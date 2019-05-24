@@ -21,12 +21,14 @@ public class OfflineTutorialContentProvider extends ContentProvider {
     public static final int QUIZ = 140;
     public static final int FAVOURITES = 150;
     public static final int NOTIFICATIONS = 160;
+    public static final int QUIZ_SET = 170;
 
     public static final int CATEGORY_WITH_ID = 101;
     public static final int SUB_CATEGORY_WITH_ID = 102;
     public static final int LESSON_WITH_ID = 103;
-    public static final int QUIZ_WITH_ID = 104;
+//    public static final int QUIZ_WITH_ID = 104;
     public static final int NOTIFICATION_WITH_ID = 106;
+    public static final int QUIZ_WITH_QUIZ_SET_ID = 107;//qui
 
 
     // Declare a static variable for the Uri matcher that you construct
@@ -55,9 +57,11 @@ public class OfflineTutorialContentProvider extends ContentProvider {
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_FAVOURITES, FAVOURITES);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_LESSONS + "/#", LESSON_WITH_ID);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ, QUIZ);
-        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ + "/#", QUIZ_WITH_ID);
+//        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ + "/#", QUIZ_WITH_ID);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_NOTIFICATIONS, NOTIFICATIONS);
         uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_NOTIFICATIONS + "/#", NOTIFICATION_WITH_ID);
+        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ_SET, QUIZ_SET);
+        uriMatcher.addURI(OfflineTutorialContract.CONTENT_AUTHORITY, OfflineTutorialContract.PATH_QUIZ + "/#", QUIZ_WITH_QUIZ_SET_ID);
 
         return uriMatcher;
     }
@@ -106,8 +110,13 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                 break;
             case QUIZ:
                 // Insert new values into the database
-                // Inserting values into categories table
+                // Inserting values into quiz table
                 returnUri = insertSingleValue(uri, db, values, QuizEntry.TABLE_NAME);
+                break;
+            case QUIZ_SET:
+                // Insert new values into the database
+                // Inserting values into quiz_set table
+                returnUri = insertSingleValue(uri, db, values, QuizSetEntry.TABLE_NAME);
                 break;
             case NOTIFICATIONS:
                 // Insert new values into the database
@@ -229,9 +238,9 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            // Query for the quiz directory
-            case QUIZ:
-                retCursor =  db.query(QuizEntry.TABLE_NAME,
+            // Query for the quiz_set directory
+            case QUIZ_SET:
+                retCursor =  db.query(QuizSetEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -239,20 +248,43 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-            // Handle the single category case, recognized by the ID included in the URI path
-            case QUIZ_WITH_ID: //lesson with sub_category_id
-                // Get the task ID from the URI path
+            case QUIZ_WITH_QUIZ_SET_ID: //quiz with quiz_set_id
+                // Get the quiz_set ID from the URI path
                 id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
 
                 retCursor =  db.query(QuizEntry.TABLE_NAME,
                         projection,
-                        "_id=?",//searh with csub_ategory_id not lesson id
+                        "quiz_set_id=?",//search with quiz_set_id not quiz id
                         new String[]{id},
                         null,
                         null,
                         sortOrder);
                 break;
+            // Query for the quiz directory
+//            case QUIZ:
+//                retCursor =  db.query(QuizEntry.TABLE_NAME,
+//                        projection,
+//                        selection,
+//                        selectionArgs,
+//                        null,
+//                        null,
+//                        sortOrder);
+//                break;
+            // Handle the single quiz case, recognized by the ID included in the URI path
+//            case QUIZ_WITH_ID: //quiz with quiz_id
+//                // Get the task ID from the URI path
+//                id = uri.getPathSegments().get(1);
+//                // Use selections/selectionArgs to filter for this ID
+//
+//                retCursor =  db.query(QuizEntry.TABLE_NAME,
+//                        projection,
+//                        "_id=?",
+//                        new String[]{id},
+//                        null,
+//                        null,
+//                        sortOrder);
+//                break;
             // Query for the notitications directory
             case NOTIFICATIONS:
                 retCursor =  db.query(NotificationEntry.TABLE_NAME,
@@ -322,12 +354,18 @@ public class OfflineTutorialContentProvider extends ContentProvider {
                 // Use selections/selectionArgs to filter for this ID
                 recordsDeleted = db.delete(LessonEntry.TABLE_NAME, "_id=?", new String[]{id});
                 break;
-            case QUIZ_WITH_ID:
-                // Get the task ID from the URI path
-                id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                recordsDeleted = db.delete(QuizEntry.TABLE_NAME, "_id=?", new String[]{id});
-                break;
+//            case QUIZ_WITH_ID:
+//                // Get the task ID from the URI path
+//                id = uri.getPathSegments().get(1);
+//                // Use selections/selectionArgs to filter for this ID
+//                recordsDeleted = db.delete(QuizEntry.TABLE_NAME, "_id=?", new String[]{id});
+//                break;
+//            case QUIZ_SET_WITH_ID:
+//                // Get the task ID from the URI path
+//                id = uri.getPathSegments().get(1);
+//                // Use selections/selectionArgs to filter for this ID
+//                recordsDeleted = db.delete(QuizSetEntry.TABLE_NAME, "_id=?", new String[]{id});
+//                break;
             case NOTIFICATION_WITH_ID:
                 // Get the task ID from the URI path
                 id = uri.getPathSegments().get(1);
@@ -437,6 +475,8 @@ public class OfflineTutorialContentProvider extends ContentProvider {
 
             case LESSONS:
                 return insertValues(uri, values, db, LessonEntry.TABLE_NAME);
+            case QUIZ_SET:
+                return insertValues(uri, values, db, QuizSetEntry.TABLE_NAME);
             case QUIZ:
                 return insertValues(uri, values, db, QuizEntry.TABLE_NAME);
 

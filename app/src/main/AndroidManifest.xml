@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.muilat.android.offlinetutorial">
 
-    <!-- This permission is necessary in order for Sunshine to perform network access. -->
+    <!-- This permission is necessary in order for offline tutorial to perform network access. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -87,13 +87,20 @@
             android:label="@string/action_quiz"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name=".QuizSetActivity"
+            android:label="@string/action_quiz"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
 
         </activity>
 
         <activity
             android:name=".ResultActivity"
             android:label="@string/quiz_result"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity">
 
         </activity>
@@ -109,19 +116,14 @@
         </activity>
 
         <activity
-            android:name=".FavouriteViewActivity"
-            android:label="@string/favourites"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".FavouriteActivity">
-
-        </activity>
-
-        <activity
             android:name=".LessonViewFragment"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
         <activity android:name=".InfoActivity"
+            android:parentActivityName=".MainActivity" />
+
+        <activity android:name=".DeveloperActivity"
             android:parentActivityName=".MainActivity" />
 
 
@@ -130,27 +132,6 @@
             android:authorities="com.muilat.android.offlinetutorial"
             android:exported="false" />
 
-        <!--<service android:name=".sync.OfflineTutorialAuthenticatorService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.accounts.AccountAuthenticator" />-->
-            <!--</intent-filter>-->
-            <!--<meta-data-->
-                <!--android:name="android.accounts.AccountAuthenticator"-->
-                <!--android:resource="@xml/authenticator" />-->
-        <!--</service>-->
-
-        <!-- The SyncAdapter service -->
-        <!--<service-->
-            <!--android:name=".sync.OfflineTutorialSyncService"-->
-            <!--android:exported="true"-->
-            <!--&gt;-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.content.SyncAdapter" />-->
-            <!--</intent-filter>-->
-            <!--<meta-data-->
-                <!--android:name="android.content.SyncAdapter"-->
-                <!--android:resource="@xml/syncadapter" />-->
-        <!--</service>-->
 
         <!--This is required for immediate syncs -->
         <service
